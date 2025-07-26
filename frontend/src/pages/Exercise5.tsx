@@ -65,7 +65,7 @@ export const Exercise5: React.FC = () => {
       const res = await callContractFunction(contract, "estPair", [
         parseInt(number),
       ]);
-      setResult(res.toString() === "true" ? "Pair ✅" : "Impair ❌");
+      setResult(res.toString() === "true" ? "Pair" : "Impair");
     } catch {
       setResult("Erreur");
     }
@@ -95,7 +95,7 @@ export const Exercise5: React.FC = () => {
           placeholder="Entrez un nombre"
         />
         <button onClick={checkParity} style={styles.button}>
-          🔍 Vérifier parité
+          Vérifier parité
         </button>
         {result && <div style={styles.result}>Résultat: {result}</div>}
       </div>

@@ -95,16 +95,27 @@ interface TransactionData {
   from: string;
   to: string;
   value: string;
+  nonce?: number;
+  transactionIndex?: number;
+  cumulativeGasUsed?: number;
+  logs?: object[];
 }
 
 interface TransactionDetailsProps {
   transaction: TransactionData | null;
   networkId?: number;
+  transactionCount?: number; // New prop for total transaction count
+}
+interface TransactionDetailsProps {
+  transaction: TransactionData | null;
+  networkId?: number;
+  transactionCount?: number; // New prop for total transaction count
 }
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   transaction,
   networkId,
+  transactionCount,
 }) => {
   /**
    * Generate block explorer URL based on network
@@ -135,7 +146,20 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
 
   return (
     <div style={styles.container}>
-      <h3 style={styles.title}>📄 Last Transaction Details</h3>
+      <h3 style={styles.title}>
+        Latest Transaction Details
+        {transactionCount && (
+          <span
+            style={{
+              fontSize: "14px",
+              fontWeight: "normal",
+              marginLeft: "8px",
+            }}
+          >
+            ({transactionCount} transactions total)
+          </span>
+        )}
+      </h3>
 
       {!transaction ? (
         <div style={styles.noTransaction}>
@@ -166,7 +190,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                 ...(transaction.status ? styles.success : styles.failure),
               }}
             >
-              {transaction.status ? "✅ Success" : "❌ Failed"}
+              {transaction.status ? "Success" : "Failed"}
             </span>
           </div>
 
@@ -176,6 +200,22 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
             <span style={styles.value}>#{transaction.blockNumber}</span>
           </div>
 
+          {/* Transaction Index */}
+          {transaction.transactionIndex !== undefined && (
+            <div style={styles.transactionItem}>
+              <span style={styles.label}>Transaction Index</span>
+              <span style={styles.value}>{transaction.transactionIndex}</span>
+            </div>
+          )}
+
+          {/* Nonce */}
+          {transaction.nonce !== undefined && (
+            <div style={styles.transactionItem}>
+              <span style={styles.label}>Nonce</span>
+              <span style={styles.value}>{transaction.nonce}</span>
+            </div>
+          )}
+
           {/* Gas Information */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Gas Used</span>
@@ -183,6 +223,16 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
               {transaction.gasUsed.toLocaleString()} gas
             </span>
           </div>
+
+          {/* Cumulative Gas Used */}
+          {transaction.cumulativeGasUsed && (
+            <div style={styles.transactionItem}>
+              <span style={styles.label}>Cumulative Gas Used</span>
+              <span style={styles.value}>
+                {transaction.cumulativeGasUsed.toLocaleString()} gas
+              </span>
+            </div>
+          )}
 
           <div style={styles.transactionItem}>
             <span style={styles.label}>Gas Price</span>
@@ -223,6 +273,16 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
               {weiToEther(transaction.value)} ETH
             </span>
           </div>
+
+          {/* Logs/Events */}
+          {transaction.logs && transaction.logs.length > 0 && (
+            <div style={styles.transactionItem}>
+              <span style={styles.label}>Events/Logs</span>
+              <span style={styles.value}>
+                {transaction.logs.length} events emitted
+              </span>
+            </div>
+          )}
 
           {/* Timestamp (if available) */}
           {transaction.timestamp && (

@@ -125,7 +125,7 @@ export const Exercise8: React.FC = () => {
         <p>Compte connecté: {currentAccount}</p>
 
         <button onClick={getBalance} style={styles.button}>
-          💰 Voir solde
+          Voir solde
         </button>
 
         <div style={{ marginTop: "16px" }}>

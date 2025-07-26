@@ -243,7 +243,7 @@ export const Exercise3: React.FC = () => {
       <div style={styles.container}>
         <Navigation />
         <div style={styles.section}>
-          <h2 style={styles.title}>🔄 Connexion à la blockchain...</h2>
+          <h2 style={styles.title}>Connexion à la blockchain...</h2>
         </div>
       </div>
     );
@@ -254,7 +254,7 @@ export const Exercise3: React.FC = () => {
       <Navigation />
 
       <div style={styles.header}>
-        <h1 style={styles.title}>📝 Exercice 3 : Gestion des chaînes</h1>
+        <h1 style={styles.title}>Exercice 3 : Gestion des chaînes</h1>
         <p style={styles.description}>
           Manipulation de chaînes de caractères avec Solidity : stockage,
           modification, concaténation, longueur et comparaison.
@@ -262,7 +262,7 @@ export const Exercise3: React.FC = () => {
       </div>
 
       <div style={styles.contractInfo}>
-        <h3 style={styles.sectionTitle}>📋 Informations du contrat</h3>
+        <h3 style={styles.sectionTitle}>Informations du contrat</h3>
         <div style={styles.infoText}>
           <strong>Adresse du contrat:</strong>{" "}
           {contracts?.["Exercice3"]?.address}
@@ -276,13 +276,13 @@ export const Exercise3: React.FC = () => {
 
       {/* Current Message */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>📖 Message actuel</h3>
+        <h3 style={styles.sectionTitle}>Message actuel</h3>
         <button
           onClick={getMessage}
           style={styles.button}
           disabled={loading === "getMessage"}
         >
-          {loading === "getMessage" ? "🔄 Chargement..." : "📖 Lire le message"}
+          {loading === "getMessage" ? "Chargement..." : "Lire le message"}
         </button>
         {currentMessage && (
           <div style={styles.result}>
@@ -294,7 +294,7 @@ export const Exercise3: React.FC = () => {
 
       {/* Set Message */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>✏️ Modifier le message</h3>
+        <h3 style={styles.sectionTitle}>Modifier le message</h3>
         <div style={styles.formGroup}>
           <label style={styles.label}>Nouveau message :</label>
           <input
@@ -310,15 +310,13 @@ export const Exercise3: React.FC = () => {
           style={styles.button}
           disabled={loading === "setMessage" || !newMessage}
         >
-          {loading === "setMessage"
-            ? "🔄 Modification..."
-            : "✏️ Modifier le message"}
+          {loading === "setMessage" ? "Modification..." : "Modifier le message"}
         </button>
       </div>
 
       {/* Concatenate Strings */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>🔗 Concaténation de chaînes</h3>
+        <h3 style={styles.sectionTitle}>Concaténation de chaînes</h3>
         <div style={styles.formGroup}>
           <label style={styles.label}>Première chaîne :</label>
           <input
@@ -340,7 +338,7 @@ export const Exercise3: React.FC = () => {
           style={styles.button}
           disabled={loading === "concatenate"}
         >
-          {loading === "concatenate" ? "🔄 Concaténation..." : "🔗 Concaténer"}
+          {loading === "concatenate" ? "Concaténation..." : "Concaténer"}
         </button>
         {concatenateResult && (
           <div style={styles.result}>
@@ -352,7 +350,7 @@ export const Exercise3: React.FC = () => {
 
       {/* Concatenate with Message */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>🔗 Concaténer avec le message</h3>
+        <h3 style={styles.sectionTitle}>Concaténer avec le message</h3>
         <div style={styles.formGroup}>
           <label style={styles.label}>Chaîne à ajouter :</label>
           <input
@@ -367,8 +365,8 @@ export const Exercise3: React.FC = () => {
           disabled={loading === "concatenateWith"}
         >
           {loading === "concatenateWith"
-            ? "🔄 Concaténation..."
-            : "🔗 Concaténer avec message"}
+            ? "Concaténation..."
+            : "Concaténer avec message"}
         </button>
         {concatenateWithResult && (
           <div style={styles.result}>
@@ -380,7 +378,7 @@ export const Exercise3: React.FC = () => {
 
       {/* String Length */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>📏 Longueur de chaîne</h3>
+        <h3 style={styles.sectionTitle}>Longueur de chaîne</h3>
         <div style={styles.formGroup}>
           <label style={styles.label}>Chaîne à mesurer :</label>
           <input
@@ -394,7 +392,7 @@ export const Exercise3: React.FC = () => {
           style={styles.button}
           disabled={loading === "length"}
         >
-          {loading === "length" ? "🔄 Calcul..." : "📏 Calculer longueur"}
+          {loading === "length" ? "Calcul..." : "Calculer longueur"}
         </button>
         {lengthResult && (
           <div style={styles.result}>
@@ -406,7 +404,7 @@ export const Exercise3: React.FC = () => {
 
       {/* Compare Strings */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>⚖️ Comparaison de chaînes</h3>
+        <h3 style={styles.sectionTitle}>Comparaison de chaînes</h3>
         <div style={styles.formGroup}>
           <label style={styles.label}>Première chaîne :</label>
           <input
@@ -428,19 +426,19 @@ export const Exercise3: React.FC = () => {
           style={styles.button}
           disabled={loading === "compare"}
         >
-          {loading === "compare" ? "🔄 Comparaison..." : "⚖️ Comparer"}
+          {loading === "compare" ? "Comparaison..." : "Comparer"}
         </button>
         {compareResult && (
           <div style={styles.result}>
             <div style={styles.resultTitle}>Résultat :</div>
             <div style={styles.resultValue}>
-              {compareResult === "true" ? "✅ Identiques" : "❌ Différentes"}
+              {compareResult === "true" ? "Identiques" : "Différentes"}
             </div>
           </div>
         )}
       </div>
 
-      {error && <div style={styles.error}>❌ Erreur : {error}</div>}
+      {error && <div style={styles.error}>Erreur : {error}</div>}
 
       <BlockchainInfo />
       <TransactionDetails transaction={lastTransaction} />

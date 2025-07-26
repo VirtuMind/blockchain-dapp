@@ -84,22 +84,22 @@ export const Navigation: React.FC = () => {
         {/* Exercise Navigation Links */}
         <li style={styles.navItem}>
           <Link
-            to="/exercise1"
+            to="/exercice1"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise1") ? styles.activeLink : {}),
+              ...(isActive("/exercice1") ? styles.activeLink : {}),
             }}
           >
-            Ex 1: Addition
+            Ex 1
           </Link>
         </li>
 
         <li style={styles.navItem}>
           <Link
-            to="/exercise2"
+            to="/exercice2"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise2") ? styles.activeLink : {}),
+              ...(isActive("/exercice2") ? styles.activeLink : {}),
             }}
           >
             Ex 2
@@ -108,10 +108,10 @@ export const Navigation: React.FC = () => {
 
         <li style={styles.navItem}>
           <Link
-            to="/exercise3"
+            to="/exercice3"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise3") ? styles.activeLink : {}),
+              ...(isActive("/exercice3") ? styles.activeLink : {}),
             }}
           >
             Ex 3
@@ -120,10 +120,10 @@ export const Navigation: React.FC = () => {
 
         <li style={styles.navItem}>
           <Link
-            to="/exercise4"
+            to="/exercice4"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise4") ? styles.activeLink : {}),
+              ...(isActive("/exercice4") ? styles.activeLink : {}),
             }}
           >
             Ex 4
@@ -132,10 +132,10 @@ export const Navigation: React.FC = () => {
 
         <li style={styles.navItem}>
           <Link
-            to="/exercise5"
+            to="/exercice5"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise5") ? styles.activeLink : {}),
+              ...(isActive("/exercice5") ? styles.activeLink : {}),
             }}
           >
             Ex 5
@@ -144,10 +144,10 @@ export const Navigation: React.FC = () => {
 
         <li style={styles.navItem}>
           <Link
-            to="/exercise6"
+            to="/exercice6"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise6") ? styles.activeLink : {}),
+              ...(isActive("/exercice6") ? styles.activeLink : {}),
             }}
           >
             Ex 6
@@ -156,10 +156,10 @@ export const Navigation: React.FC = () => {
 
         <li style={styles.navItem}>
           <Link
-            to="/exercise7"
+            to="/exercice7"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise7") ? styles.activeLink : {}),
+              ...(isActive("/exercice7") ? styles.activeLink : {}),
             }}
           >
             Ex 7
@@ -168,10 +168,10 @@ export const Navigation: React.FC = () => {
 
         <li style={styles.navItem}>
           <Link
-            to="/exercise8"
+            to="/exercice8"
             style={{
               ...styles.navLink,
-              ...(isActive("/exercise8") ? styles.activeLink : {}),
+              ...(isActive("/exercice8") ? styles.activeLink : {}),
             }}
           >
             Ex 8

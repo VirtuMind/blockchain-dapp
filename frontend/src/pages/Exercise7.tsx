@@ -104,7 +104,7 @@ export const Exercise7: React.FC = () => {
         </button>
 
         <button onClick={getDimensions} style={styles.button}>
-          📏 Dimensions
+          Dimensions
         </button>
 
         <button onClick={calculateArea} style={styles.button}>

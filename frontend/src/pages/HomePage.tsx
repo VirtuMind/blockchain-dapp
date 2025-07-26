@@ -18,7 +18,6 @@ import { BlockchainInfo } from "../components/BlockchainInfo";
 // CSS styles for the home page
 const styles = {
   container: {
-    maxWidth: "1200px",
     margin: "0 auto",
     padding: "20px",
     color: "#fff",
@@ -119,56 +118,56 @@ const exercises = [
     title: "Addition de nombres",
     description:
       "Contrat avec deux variables d'état et fonctions pour calculer la somme. Fonctions view et pure.",
-    path: "/exercise1",
+    path: "/exercice1",
   },
   {
     id: 2,
     title: "Conversion Ether/Wei",
     description:
       "Convertisseur de cryptomonnaies entre Ether et Wei. Fonctions de conversion bidirectionnelle.",
-    path: "/exercise2",
+    path: "/exercice2",
   },
   {
     id: 3,
     title: "Gestion des chaînes",
     description:
       "Manipulation de chaînes de caractères : modification, concaténation, longueur et comparaison.",
-    path: "/exercise3",
+    path: "/exercice3",
   },
   {
     id: 4,
     title: "Vérification positive",
     description:
       "Fonction pour vérifier si un nombre est positif. Retourne un booléen.",
-    path: "/exercise4",
+    path: "/exercice4",
   },
   {
     id: 5,
     title: "Vérification parité",
     description:
       "Contrat intelligent pour vérifier la parité d'un nombre entier (pair ou impair).",
-    path: "/exercise5",
+    path: "/exercice5",
   },
   {
     id: 6,
     title: "Opérations sur tableaux",
     description:
       "Stockage et manipulation d'une liste de nombres avec calcul de somme et gestion des éléments.",
-    path: "/exercise6",
+    path: "/exercice6",
   },
   {
     id: 7,
     title: "Formes géométriques",
     description:
       "Programmation orientée objet avec contrat abstrait Forme et implémentation Rectangle.",
-    path: "/exercise7",
+    path: "/exercice7",
   },
   {
     id: 8,
     title: "Contrat de paiement",
     description:
       "Système de paiement avec gestion des transactions et des soldes entre adresses.",
-    path: "/exercise8",
+    path: "/exercice8",
   },
 ];
 
@@ -198,41 +197,34 @@ export const HomePage: React.FC = () => {
     <div style={styles.container}>
       {/* Header Section */}
       <div style={styles.header}>
-        <h1 style={styles.title}>🚀 Application Décentralisée</h1>
-        <h2 style={styles.subtitle}>TP 3 : Bases du langage Solidity</h2>
-        <p style={styles.description}>
-          Cette application décentralisée (dApp) vous permet d'interagir avec 8
-          contrats intelligents développés en Solidity. Chaque exercice explore
-          différents concepts blockchain : variables d'état, fonctions
-          view/pure, gestion des chaînes, tableaux, programmation orientée
-          objet, et systèmes de paiement. Utilisez Ganache pour le développement
-          local et MetaMask pour les interactions.
-        </p>
+        <h1 style={styles.title}>
+          <img src="/block.png" alt="Blockchain" height="40" /> Application
+          Décentralisée
+        </h1>
+        <h2 style={styles.subtitle}>Travail réalisé par Younes Khoubaz</h2>
       </div>
 
       {/* Connection Status */}
-      <div style={styles.statusSection}>
+      {/* <div style={styles.statusSection}>
         <h3 style={styles.statusTitle}>📡 État de la connexion</h3>
         <p style={styles.statusText}>
           {loading && (
             <span style={styles.loadingText}>
-              🔄 Connexion à la blockchain en cours...
+              Connexion à la blockchain en cours...
             </span>
           )}
           {error && (
-            <span style={styles.errorText}>
-              ❌ Erreur de connexion : {error}
-            </span>
+            <span style={styles.errorText}>Erreur de connexion : {error}</span>
           )}
           {isConnected && hasContracts && (
             <span>
-              ✅ Connecté à la blockchain ! Tous les contrats sont chargés et
-              prêts à être utilisés.
+              Connecté à la blockchain ! Tous les contrats sont chargés et prêts
+              à être utilisés.
             </span>
           )}
           {isConnected && !hasContracts && (
             <span style={styles.loadingText}>
-              ⚠️ Connecté mais chargement des contrats en cours...
+              Connecté mais chargement des contrats en cours...
             </span>
           )}
           {!isConnected && !loading && !error && (
@@ -241,10 +233,10 @@ export const HomePage: React.FC = () => {
             </span>
           )}
         </p>
-      </div>
+      </div> */}
 
       {/* Blockchain Info Component */}
-      <BlockchainInfo />
+      {/* <BlockchainInfo /> */}
 
       {/* Exercise Menu */}
       <div style={styles.exerciseGrid}>
@@ -261,39 +253,6 @@ export const HomePage: React.FC = () => {
             <p style={styles.exerciseDescription}>{exercise.description}</p>
           </Link>
         ))}
-      </div>
-
-      {/* Instructions Footer */}
-      <div style={styles.statusSection}>
-        <h3 style={styles.statusTitle}>📋 Instructions d'utilisation</h3>
-        <div style={styles.statusText}>
-          <ol style={{ paddingLeft: "20px", lineHeight: "1.8" }}>
-            <li>
-              Assurez-vous que <strong>Ganache</strong> est démarré sur le port
-              7545
-            </li>
-            <li>
-              Vérifiez que les <strong>contrats sont déployés</strong> (statut
-              de connexion vert)
-            </li>
-            <li>
-              Cliquez sur un <strong>exercice</strong> pour accéder à son
-              interface
-            </li>
-            <li>
-              Utilisez les <strong>formulaires</strong> pour tester les
-              fonctions des contrats
-            </li>
-            <li>
-              Consultez les <strong>détails des transactions</strong> après
-              chaque interaction
-            </li>
-            <li>
-              <em>Optionnel</em> : Connectez <strong>MetaMask</strong> au réseau
-              Ganache pour plus de fonctionnalités
-            </li>
-          </ol>
-        </div>
       </div>
     </div>
   );

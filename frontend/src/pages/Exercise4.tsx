@@ -65,7 +65,7 @@ export const Exercise4: React.FC = () => {
       const res = await callContractFunction(contract, "estPositif", [
         parseInt(number),
       ]);
-      setResult(res.toString() === "true" ? "Positif ✅" : "Non positif ❌");
+      setResult(res.toString() === "true" ? "Positif" : "Non positif");
     } catch (err) {
       setResult("Erreur");
     }
@@ -95,7 +95,7 @@ export const Exercise4: React.FC = () => {
           placeholder="Entrez un nombre"
         />
         <button onClick={checkPositive} style={styles.button}>
-          🔍 Vérifier si positif
+          Vérifier si positif
         </button>
         {result && <div style={styles.result}>Résultat: {result}</div>}
       </div>

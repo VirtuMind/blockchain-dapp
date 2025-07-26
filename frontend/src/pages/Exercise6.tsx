@@ -104,13 +104,13 @@ export const Exercise6: React.FC = () => {
     <div style={styles.container}>
       <Navigation />
       <div style={styles.header}>
-        <h1 style={styles.title}>📊 Exercice 6 : Opérations sur tableaux</h1>
+        <h1 style={styles.title}>Exercice 6 : Opérations sur tableaux</h1>
       </div>
       <div style={styles.section}>
         <p>Contrat: {contracts?.["Exercice6"]?.address}</p>
 
         <button onClick={getNumbers} style={styles.button}>
-          📋 Voir tous les nombres
+          Voir tous les nombres
         </button>
 
         <button onClick={getSum} style={styles.button}>
@@ -126,7 +126,7 @@ export const Exercise6: React.FC = () => {
             placeholder="Index à consulter"
           />
           <button onClick={getNumber} style={styles.button}>
-            🔍 Obtenir nombre par index
+            Obtenir nombre par index
           </button>
         </div>
 
