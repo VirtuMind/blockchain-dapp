@@ -10,7 +10,7 @@
     "console": "truffle console",
     "test": "truffle test",
     "copy-contracts": "node scripts/copy-contracts.js",
-    "build": "npm run compile && npm run migrate-reset && npm run copy-contracts",
+    "build": "npm run migrate-reset && npm run copy-contracts",
     "start-ganache": "echo 'Please start Ganache GUI application manually'",
     "dev": "npm run build && echo 'Ready for development! Start React frontend: cd frontend && npm start'"
   },

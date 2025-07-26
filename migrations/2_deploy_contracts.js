@@ -1,34 +1,14 @@
-/**
- * TRUFFLE MIGRATION SCRIPT - UPDATED FOR STREAMLINED CONTRACTS
- * 
- * This script deploys all 8 smart contracts to the blockchain
- * RESTRUCTURED: Contracts are now organized by exercise for better readability
- * 
- * MIGRATION PROCESS:
- * 1. Truffle compiles all contracts in contracts/ folder
- * 2. Migration script deploys them to specified network (Ganache)
- * 3. Each contract gets a permanent address on blockchain
- * 4. Address and ABI saved to build/contracts/ for frontend use
- * 
- * NEW STRUCTURE:
- * - Exercise3 contains GestionChaines
- * - Exercise7 contains Forme and Rectangle
- * - Exercise8 contains Payment
- * - Individual contracts for Exercises 1, 2, 4, 5, 6
- */
-
-// Import all contract artifacts (compiled contracts)
 const Exercice1 = artifacts.require("Exercice1");
 const Exercice2 = artifacts.require("Exercice2");
-const Exercice3 = artifacts.require("Exercice3");  // Contains GestionChaines
+const Exercice3 = artifacts.require("Exercice3"); 
 const Exercice4 = artifacts.require("Exercice4");
 const Exercice5 = artifacts.require("Exercice5");
 const Exercice6 = artifacts.require("Exercice6");
-const Exercice7 = artifacts.require("Exercice7");  // Contains Forme and Rectangle
-const Exercice8 = artifacts.require("Exercice8");  // Contains Payment
+const Exercice7 = artifacts.require("Exercice7"); 
+const Exercice8 = artifacts.require("Exercice8"); 
 
-export default async function (deployer, network, accounts) {
-  
+module.exports = async function (deployer, network, accounts) {
+
   try {
     // Deploy Exercise 1: Addition Contract
     // Constructor needs two initial numbers
@@ -79,42 +59,12 @@ export default async function (deployer, network, accounts) {
     const exercice8 = await Exercice8.deployed();
     console.log("Exercice8 (with Payment) deployed at:", exercice8.address);
 
-    
-    // NEXT STEPS INFORMATION
-    console.log("\n🎉 All contracts deployed successfully!");
-    console.log("\n📋 Next Steps:");
-    console.log("1. Run 'node scripts/copy-contracts.js' to copy ABIs to frontend");
-    console.log("2. Start React frontend with 'cd frontend && npm run preview'");
-    console.log("3. Connect MetaMask to Ganache network (localhost:7545)");
-    console.log("4. Import Ganache accounts into MetaMask for testing");
+  
     
     
   } catch (error) {
-    console.error("❌ Deployment failed:", error);
+    console.error("Deployment failed:", error);
     throw error;
   }
 };
 
-/**
- * MIGRATION EXPLANATION:
- * 
- * 1. ARTIFACTS: artifacts.require() loads compiled contract
- * 2. DEPLOYER: deployer.deploy() deploys contract to blockchain
- * 3. CONSTRUCTOR PARAMS: Second+ parameters are constructor arguments
- * 4. NETWORK: Specified in truffle-config.js (development = Ganache)
- * 5. ACCOUNTS: Ganache provides test accounts with Ether
- * 6. GAS: Each deployment costs gas (paid by deployer account)
- * 
- * WHAT HAPPENS DURING DEPLOYMENT:
- * - Contract bytecode is sent to blockchain
- * - Constructor executes with provided parameters
- * - Contract gets permanent address
- * - ABI and address saved to build/contracts/
- * - Contract is ready for interaction
- * 
- * TRUFFLE COMMANDS:
- * - truffle compile: Compiles contracts
- * - truffle migrate: Runs migration scripts
- * - truffle migrate --reset: Redeploys all contracts
- * - truffle console: Interactive blockchain console
- */
