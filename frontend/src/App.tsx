@@ -48,28 +48,28 @@ function App() {
           <Route path="/" element={<HomePage />} />
 
           {/* EXERCICE 1 - Addition et fonctions view/pure */}
-          <Route path="/exercise1" element={<Exercise1 />} />
+          <Route path="/exercice1" element={<Exercise1 />} />
 
           {/* EXERCICE 2 - Conversions Ether/Wei */}
-          <Route path="/exercise2" element={<Exercise2 />} />
+          <Route path="/exercice2" element={<Exercise2 />} />
 
           {/* EXERCICE 3 - Gestion des chaînes de caractères */}
-          <Route path="/exercise3" element={<Exercise3 />} />
+          <Route path="/exercice3" element={<Exercise3 />} />
 
           {/* EXERCICE 4 - Vérification de nombres positifs */}
-          <Route path="/exercise4" element={<Exercise4 />} />
+          <Route path="/exercice4" element={<Exercise4 />} />
 
           {/* EXERCICE 5 - Contrôle de parité */}
-          <Route path="/exercise5" element={<Exercise5 />} />
+          <Route path="/exercice5" element={<Exercise5 />} />
 
           {/* EXERCICE 6 - Opérations sur les tableaux */}
-          <Route path="/exercise6" element={<Exercise6 />} />
+          <Route path="/exercice6" element={<Exercise6 />} />
 
           {/* EXERCICE 7 - Géométrie et héritage */}
-          <Route path="/exercise7" element={<Exercise7 />} />
+          <Route path="/exercice7" element={<Exercise7 />} />
 
           {/* EXERCICE 8 - Contrat de paiement */}
-          <Route path="/exercise8" element={<Exercise8 />} />
+          <Route path="/exercice8" element={<Exercise8 />} />
         </Routes>
       </div>
     </Router>

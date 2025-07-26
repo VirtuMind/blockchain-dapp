@@ -63,16 +63,16 @@ export const useWeb3 = () => {
         setError(null);
 
         // Connect to blockchain (Ganache or MetaMask)
-        console.log("🔌 Connecting to blockchain...");
+        console.log("Connecting to blockchain...");
         const web3Instance = await initWeb3();
 
         // Get list of available accounts (Ethereum addresses)
         const accounts = await web3Instance.eth.getAccounts();
-        console.log("📱 Found accounts:", accounts);
+        console.log("Found accounts:", accounts);
 
         // Get network ID to verify we're on correct blockchain
         const networkId = await web3Instance.eth.net.getId();
-        console.log("🌐 Connected to network:", networkId);
+        console.log("Connected to network:", networkId);
 
         // Update React state with connection info
         setWeb3State({
@@ -104,7 +104,7 @@ export const useWeb3 = () => {
    */
   const loadContracts = async (web3: Web3) => {
     try {
-      console.log("📄 Loading contract instances...");
+      console.log("Loading contract instances...");
 
       // List of all contract names from our exercises (UPDATED FOR NEW STRUCTURE)
       const contractNames = [
@@ -131,7 +131,7 @@ export const useWeb3 = () => {
           // Load contract ABI and create instance
           const contractInstance = await getContract(web3, contractArtifact);
           contractInstances[contractName] = contractInstance;
-          console.log(`✅ Loaded ${contractName} contract`);
+          console.log(`Loaded ${contractName} contract`);
         } catch (err) {
           console.warn(`⚠️ Failed to load ${contractName}:`, err);
           // Continue loading other contracts even if one fails
@@ -139,7 +139,7 @@ export const useWeb3 = () => {
       }
 
       setContracts(contractInstances);
-      console.log("🎉 All contracts loaded successfully");
+      console.log("All contracts loaded successfully");
     } catch (err) {
       console.error("❌ Failed to load contracts:", err);
       setError("Failed to load smart contracts");
@@ -156,7 +156,7 @@ export const useWeb3 = () => {
         ...prev,
         currentAccount: prev.accounts[accountIndex],
       }));
-      console.log("👤 Switched to account:", web3State.accounts[accountIndex]);
+      console.log("Switched to account:", web3State.accounts[accountIndex]);
     }
   };
 

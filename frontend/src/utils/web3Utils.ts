@@ -48,17 +48,14 @@ export const initWeb3 = async (): Promise<Web3> => {
 
   // Check if MetaMask is available
   if (window.ethereum) {
-    console.log("🦊 MetaMask detected");
-
     try {
       // Request account access
       await window.ethereum.request({ method: "eth_requestAccounts" });
       web3 = new Web3(window.ethereum);
 
-      console.log("✅ Connected to MetaMask");
       return web3;
     } catch {
-      console.warn("❌ MetaMask connection rejected, falling back to Ganache");
+      console.log("MetaMask connection rejected, falling back to Ganache");
       // Fall through to Ganache connection
     }
   }
@@ -69,11 +66,10 @@ export const initWeb3 = async (): Promise<Web3> => {
 
     // Test connection
     await web3.eth.net.isListening();
-    console.log("✅ Connected to Ganache local network");
 
     return web3;
   } catch (error) {
-    console.error("❌ Failed to connect to Ganache:", error);
+    console.log("Failed to connect to Ganache:", error);
     throw new Error(
       "Cannot connect to blockchain. Make sure Ganache is running on port 7545"
     );
@@ -90,7 +86,6 @@ export const getContract = async (
   try {
     // Get current network ID
     const networkId = await web3.eth.net.getId();
-    console.log(`🌐 Connected to network ID: ${networkId}`);
 
     // Get contract deployment info for this network
     const deployedNetwork = contractArtifact.networks[networkId.toString()];
@@ -105,15 +100,13 @@ export const getContract = async (
       deployedNetwork.address
     );
 
-    console.log(`📄 Contract loaded at address: ${deployedNetwork.address}`);
-
     return {
       contract,
       address: deployedNetwork.address,
       networkId: networkId.toString(),
     };
   } catch (error) {
-    console.error("❌ Error loading contract:", error);
+    console.log("Error loading contract:", error);
     throw error;
   }
 };
@@ -129,12 +122,9 @@ export const getAccounts = async (web3: Web3): Promise<string[]> => {
       throw new Error("No accounts found. Make sure wallet is connected.");
     }
 
-    console.log(`👥 Found ${accounts.length} accounts`);
-    console.log(`🏠 Primary account: ${accounts[0]}`);
-
     return accounts;
   } catch (error) {
-    console.error("❌ Error getting accounts:", error);
+    console.log("Error getting accounts:", error);
     throw error;
   }
 };
@@ -159,7 +149,7 @@ export const getBalance = async (
       formatted: `${parseFloat(balanceEther).toFixed(4)} ETH`,
     };
   } catch (error) {
-    console.error("❌ Error getting balance:", error);
+    console.log("Error getting balance:", error);
     throw error;
   }
 };
@@ -172,22 +162,48 @@ export const getBlockchainInfo = async (web3: Web3) => {
     // Get network information
     const networkId = await web3.eth.net.getId();
 
-    // Get latest block information
-    const latestBlock = await web3.eth.getBlock("latest");
+    // Determine network URL based on current provider
+    let networkUrl = "Unknown";
+    if (
+      web3.currentProvider &&
+      typeof web3.currentProvider === "object" &&
+      "host" in web3.currentProvider
+    ) {
+      networkUrl = (web3.currentProvider as any).host || "Unknown";
+    } else if (
+      web3.currentProvider &&
+      typeof web3.currentProvider === "string"
+    ) {
+      networkUrl = web3.currentProvider;
+    } else {
+      // Default for common networks
+      if (networkId.toString() === "1337" || networkId.toString() === "5777") {
+        networkUrl = "http://127.0.0.1:7545"; // Ganache
+      }
+    }
+
+    // Get latest block information with all details
+    const latestBlock = await web3.eth.getBlock("latest", true); // true to get full transaction objects
 
     return {
       networkId: networkId.toString(),
+      networkUrl,
       latestBlock: {
         number: latestBlock?.number || 0,
         hash: latestBlock?.hash || "",
         timestamp: latestBlock?.timestamp || 0,
-        gasUsed: latestBlock?.gasUsed || 0,
-        gasLimit: latestBlock?.gasLimit || 0,
+        parentHash: latestBlock?.parentHash || "",
+        nonce: latestBlock?.nonce?.toString() || "",
         transactionCount: latestBlock?.transactions?.length || 0,
+        miner: latestBlock?.miner || "",
+        difficulty: latestBlock?.difficulty || 0,
+        gasLimit: latestBlock?.gasLimit || 0,
+        gasUsed: latestBlock?.gasUsed || 0,
+        size: Number(latestBlock?.size || 0),
       },
     };
   } catch (error) {
-    console.error("❌ Error getting blockchain info:", error);
+    console.log("Error getting blockchain info:", error);
     throw error;
   }
 };
@@ -202,16 +218,13 @@ export const callContractFunction = async (
   fromAccount: string | null = null
 ) => {
   try {
-    console.log(`📞 Calling function: ${functionName}`);
-
     const result = await contract.methods[functionName](...params).call({
       from: fromAccount,
     });
 
-    console.log(`✅ Function result:`, result);
     return result;
   } catch (error) {
-    console.error(`❌ Error calling ${functionName}:`, error);
+    console.log(`Error calling contract function ${functionName}:`, error);
     throw error;
   }
 };
@@ -227,8 +240,6 @@ export const sendContractTransaction = async (
   value: number = 0
 ): Promise<TransactionResult> => {
   try {
-    console.log(`📤 Sending transaction: ${functionName}`);
-
     // Prepare transaction
     const transaction = contract.methods[functionName](...params);
 
@@ -238,16 +249,12 @@ export const sendContractTransaction = async (
       value: value,
     });
 
-    console.log(`⛽ Estimated gas: ${gasEstimate}`);
-
     // Send transaction
     const receipt = await transaction.send({
       from: fromAccount,
       gas: Math.floor(Number(gasEstimate) * 1.1),
       value: value,
     });
-
-    console.log(`✅ Transaction successful:`, receipt);
 
     return {
       receipt,
@@ -256,7 +263,7 @@ export const sendContractTransaction = async (
       blockNumber: receipt.blockNumber,
     };
   } catch (error) {
-    console.error(`❌ Transaction failed for ${functionName}:`, error);
+    console.log("Error sending transaction:", error);
     throw error;
   }
 };
@@ -275,7 +282,7 @@ export const formatTransaction = (transactionData: any) => {
     hash: receipt.transactionHash,
     block: receipt.blockNumber,
     gasUsed: receipt.gasUsed.toString(),
-    status: receipt.status ? "Success ✅" : "Failed ❌",
+    status: receipt.status ? "Success" : "Failed",
     timestamp: new Date().toLocaleString(),
   };
 };
