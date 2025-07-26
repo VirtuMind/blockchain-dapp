@@ -1,0 +1,40 @@
+{
+  "name": "blockchain-dapp",
+  "version": "1.0.0",
+  "description": "Decentralized Application for TP3 Solidity Exercises",
+  "main": "truffle-config.js",
+  "scripts": {
+    "compile": "truffle compile",
+    "migrate": "truffle migrate",
+    "migrate-reset": "truffle migrate --reset",
+    "console": "truffle console",
+    "test": "truffle test",
+    "copy-contracts": "node scripts/copy-contracts.js",
+    "build": "npm run compile && npm run migrate-reset && npm run copy-contracts",
+    "start-ganache": "echo 'Please start Ganache GUI application manually'",
+    "dev": "npm run build && echo 'Ready for development! Start React frontend: cd frontend && npm start'"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "solidity",
+    "truffle",
+    "react",
+    "web3",
+    "dapp"
+  ],
+  "author": "Student",
+  "license": "MIT",
+  "devDependencies": {
+    "truffle": "^5.11.5",
+    "@truffle/hdwallet-provider": "^2.1.15"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VirtuMind/blockchain-dapp.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
