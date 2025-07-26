@@ -129,7 +129,7 @@ export const Exercise3: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [lastTransaction, setLastTransaction] = useState<any>(null);
 
-  const contract = contracts?.["GestionChaines"]?.contract;
+  const contract = contracts?.["Exercice3"]?.contract;
 
   // Load current message
   const getMessage = async () => {
@@ -265,7 +265,7 @@ export const Exercise3: React.FC = () => {
         <h3 style={styles.sectionTitle}>📋 Informations du contrat</h3>
         <div style={styles.infoText}>
           <strong>Adresse du contrat:</strong>{" "}
-          {contracts?.["GestionChaines"]?.address}
+          {contracts?.["Exercice3"]?.address}
           <br />
           <strong>Variable d'état:</strong> message (string)
           <br />

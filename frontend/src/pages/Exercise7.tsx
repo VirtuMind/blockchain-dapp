@@ -47,7 +47,7 @@ export const Exercise7: React.FC = () => {
   const { contracts, isReady } = useWeb3();
   const [result, setResult] = useState<string>("");
 
-  const contract = contracts?.["Rectangle"]?.contract;
+  const contract = contracts?.["Exercice7"]?.contract;
 
   const getPosition = async () => {
     if (!contract) return;
@@ -96,7 +96,7 @@ export const Exercise7: React.FC = () => {
         <h1 style={styles.title}>🔷 Exercice 7 : Rectangle (Héritage)</h1>
       </div>
       <div style={styles.section}>
-        <p>Contrat Rectangle: {contracts?.["Rectangle"]?.address}</p>
+        <p>Contrat Exercice7: {contracts?.["Exercice7"]?.address}</p>
         <p>Hérite du contrat abstrait Forme</p>
 
         <button onClick={getPosition} style={styles.button}>

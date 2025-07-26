@@ -106,16 +106,16 @@ export const useWeb3 = () => {
     try {
       console.log("📄 Loading contract instances...");
 
-      // List of all contract names from our exercises
+      // List of all contract names from our exercises (UPDATED FOR NEW STRUCTURE)
       const contractNames = [
         "Exercice1", // Addition operations
         "Exercice2", // Ether/Wei conversion
-        "GestionChaines", // String management
+        "Exercice3", // String management container (contains GestionChaines)
         "Exercice4", // Positive number check
         "Exercice5", // Parity check
         "Exercice6", // Array operations
-        "Rectangle", // Geometry (inherits from Forme)
-        "Payment", // Payment contract
+        "Exercice7", // Geometry container (contains Forme and Rectangle)
+        "Exercice8", // Payment container (contains Payment)
       ];
 
       // Create contract instances for each exercise

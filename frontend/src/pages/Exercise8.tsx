@@ -61,7 +61,7 @@ export const Exercise8: React.FC = () => {
   const [amount, setAmount] = useState<string>("0.1");
   const [result, setResult] = useState<string>("");
 
-  const contract = contracts?.["Payment"]?.contract;
+  const contract = contracts?.["Exercice8"]?.contract;
 
   const getBalance = async () => {
     if (!contract) return;
@@ -121,7 +121,7 @@ export const Exercise8: React.FC = () => {
         <h1 style={styles.title}>💳 Exercice 8 : Contrat de paiement</h1>
       </div>
       <div style={styles.section}>
-        <p>Contrat: {contracts?.["Payment"]?.address}</p>
+        <p>Contrat: {contracts?.["Exercice8"]?.address}</p>
         <p>Compte connecté: {currentAccount}</p>
 
         <button onClick={getBalance} style={styles.button}>
