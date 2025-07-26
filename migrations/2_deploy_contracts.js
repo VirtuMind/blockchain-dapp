@@ -1,7 +1,8 @@
 /**
- * TRUFFLE MIGRATION SCRIPT
+ * TRUFFLE MIGRATION SCRIPT - UPDATED FOR STREAMLINED CONTRACTS
  * 
  * This script deploys all 8 smart contracts to the blockchain
+ * RESTRUCTURED: Contracts are now organized by exercise for better readability
  * 
  * MIGRATION PROCESS:
  * 1. Truffle compiles all contracts in contracts/ folder
@@ -9,22 +10,22 @@
  * 3. Each contract gets a permanent address on blockchain
  * 4. Address and ABI saved to build/contracts/ for frontend use
  * 
- * DEPLOYMENT ORDER MATTERS:
- * - Abstract contract (Forme) must be deployed before Rectangle
- * - Some contracts need constructor parameters
- * - Gas costs are paid by the deploying account
+ * NEW STRUCTURE:
+ * - Exercise3 contains GestionChaines
+ * - Exercise7 contains Forme and Rectangle
+ * - Exercise8 contains Payment
+ * - Individual contracts for Exercises 1, 2, 4, 5, 6
  */
 
 // Import all contract artifacts (compiled contracts)
 const Exercice1 = artifacts.require("Exercice1");
 const Exercice2 = artifacts.require("Exercice2");
-const GestionChaines = artifacts.require("GestionChaines");
+const Exercice3 = artifacts.require("Exercice3");  // Contains GestionChaines
 const Exercice4 = artifacts.require("Exercice4");
 const Exercice5 = artifacts.require("Exercice5");
 const Exercice6 = artifacts.require("Exercice6");
-const Forme = artifacts.require("Forme");
-const Rectangle = artifacts.require("Rectangle");
-const Payment = artifacts.require("Payment");
+const Exercice7 = artifacts.require("Exercice7");  // Contains Forme and Rectangle
+const Exercice8 = artifacts.require("Exercice8");  // Contains Payment
 
 export default async function (deployer, network, accounts) {
   
@@ -41,11 +42,11 @@ export default async function (deployer, network, accounts) {
     const exercice2 = await Exercice2.deployed();
     console.log("Exercice2 deployed at:", exercice2.address);
     
-    // Deploy Exercise 3: String Management
-    // Constructor needs initial message
-    await deployer.deploy(GestionChaines, "Message initial pour demonstration");
-    const gestionChaines = await GestionChaines.deployed();
-    console.log("GestionChaines deployed at:", gestionChaines.address);
+    // Deploy Exercise 3: String Management Container
+    // Constructor needs initial message for internal GestionChaines contract
+    await deployer.deploy(Exercice3, "Message initial pour demonstration");
+    const exercice3 = await Exercice3.deployed();
+    console.log("Exercice3 (with GestionChaines) deployed at:", exercice3.address);
     
     // Deploy Exercise 4: Positive Number Check
     // No constructor parameters (all functions are pure)
@@ -66,31 +67,30 @@ export default async function (deployer, network, accounts) {
     const exercice6 = await Exercice6.deployed();
     console.log("Exercice6 deployed at:", exercice6.address);
 
-    // Deploy Exercise 7: Abstract Shape and Rectangle
-    // Note: We don't deploy Forme (abstract contract)
-    // Only deploy Rectangle which inherits from Forme
-    // Rectangle constructor: (x, y, length, width)
-    await deployer.deploy(Rectangle, 0, 0, 10, 5);
-    const rectangle = await Rectangle.deployed();
-    console.log("Rectangle deployed at:", rectangle.address);
+    // Deploy Exercise 7: Geometric Shapes Container
+    // No constructor parameters needed (creates rectangles dynamically)
+    await deployer.deploy(Exercice7);
+    const exercice7 = await Exercice7.deployed();
+    console.log("Exercice7 (with Forme and Rectangle) deployed at:", exercice7.address);
 
-    // Deploy Exercise 8: Payment Contract
-    // Constructor needs recipient address (use deployer's address)
-    await deployer.deploy(Payment, accounts[0]); // Deployer is recipient
-    const payment = await Payment.deployed();
-    console.log("Payment deployed at:", payment.address);
+    // Deploy Exercise 8: Payment Management Container
+    // No constructor parameters needed (creates default payment contract)
+    await deployer.deploy(Exercice8);
+    const exercice8 = await Exercice8.deployed();
+    console.log("Exercice8 (with Payment) deployed at:", exercice8.address);
 
     
     // NEXT STEPS INFORMATION
-    console.log("\n Next Steps:");
-    console.log("1. Run 'truffle console' to interact with contracts");
-    console.log("2. Use 'npm run copy-contracts' to copy ABIs to frontend");
-    console.log("3. Start React frontend with 'npm start' in frontend folder");
-    console.log("4. Connect MetaMask to Ganache network");
+    console.log("\n🎉 All contracts deployed successfully!");
+    console.log("\n📋 Next Steps:");
+    console.log("1. Run 'node scripts/copy-contracts.js' to copy ABIs to frontend");
+    console.log("2. Start React frontend with 'cd frontend && npm run preview'");
+    console.log("3. Connect MetaMask to Ganache network (localhost:7545)");
+    console.log("4. Import Ganache accounts into MetaMask for testing");
     
     
   } catch (error) {
-    console.error("Deployment failed:", error);
+    console.error("❌ Deployment failed:", error);
     throw error;
   }
 };
