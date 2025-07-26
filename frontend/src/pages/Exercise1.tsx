@@ -66,7 +66,7 @@ const styles = {
     marginBottom: "8px",
   },
   input: {
-    width: "100%",
+    width: "50%",
     padding: "12px",
     background: "#16213e",
     border: "1px solid #495057",
@@ -150,11 +150,8 @@ export const Exercise1: React.FC = () => {
 
   // Get the Exercice1 contract instance
   const contract = contracts?.["Exercice1"]?.contract;
+  const contractAddress = contracts?.["Exercice1"]?.address;
 
-  /**
-   * Load initial state variables from the smart contract
-   * This demonstrates reading blockchain state via view functions
-   */
   const loadStateVariables = async () => {
     if (!contract || !web3) return;
 
@@ -172,19 +169,15 @@ export const Exercise1: React.FC = () => {
         nombre2: nombre2Value.toString(),
       });
 
-      console.log("📖 State variables loaded:", { nombre1Value, nombre2Value });
+      console.log("State variables loaded:", { nombre1Value, nombre2Value });
     } catch (err) {
-      console.error("❌ Error loading state variables:", err);
+      console.error("Error loading state variables:", err);
       setError("Failed to load contract state variables");
     } finally {
       setLoading(null);
     }
   };
 
-  /**
-   * Call addition1() - View function that sums state variables
-   * This function reads the contract's state variables and returns their sum
-   */
   const callAddition1 = async () => {
     if (!contract || !web3) return;
 
@@ -196,9 +189,9 @@ export const Exercise1: React.FC = () => {
       const result = await callContractFunction(contract, "addition1", []);
 
       setAddition1Result(result.toString());
-      console.log("🧮 Addition1 result:", result.toString());
+      console.log("Addition1 result:", result.toString());
     } catch (err) {
-      console.error("❌ Error calling addition1:", err);
+      console.error("Error calling addition1:", err);
       setError("Failed to call addition1 function");
     } finally {
       setLoading(null);
@@ -232,7 +225,7 @@ export const Exercise1: React.FC = () => {
       ]);
 
       setAddition2Result(result.toString());
-      console.log("🧮 Addition2 result:", result.toString());
+      console.log("Addition2 result:", result.toString());
     } catch (err) {
       console.error("❌ Error calling addition2:", err);
       setError("Failed to call addition2 function");
@@ -269,7 +262,7 @@ export const Exercise1: React.FC = () => {
           nombre2: nombre2Value.toString(),
         });
 
-        console.log("📖 State variables loaded:", {
+        console.log("State variables loaded:", {
           nombre1Value,
           nombre2Value,
         });
@@ -292,7 +285,7 @@ export const Exercise1: React.FC = () => {
       <div style={styles.container}>
         <Navigation />
         <div style={styles.section}>
-          <h2 style={styles.title}>🔄 Connexion à la blockchain...</h2>
+          <h2 style={styles.title}>Connexion à la blockchain...</h2>
           <p style={styles.description}>
             Chargement du contrat Exercice1. Assurez-vous que Ganache est
             démarré.
@@ -308,64 +301,22 @@ export const Exercise1: React.FC = () => {
 
       {/* Page Header */}
       <div style={styles.header}>
-        <h1 style={styles.title}>🧮 Exercice 1 : Addition de nombres</h1>
+        <h1 style={styles.title}>Exercice 1 : Addition de nombres</h1>
         <p style={styles.description}>
           Interaction avec un contrat qui stocke deux nombres et fournit des
           fonctions d'addition.
-          <br />
-          <strong>Fonctions disponibles :</strong> addition1() [view] et
-          addition2() [pure]
         </p>
-      </div>
-
-      {/* Contract Information */}
-      <div style={styles.contractInfo}>
-        <h3 style={styles.sectionTitle}>📋 Informations du contrat</h3>
-        <div style={styles.infoText}>
-          <strong>Adresse du contrat:</strong>{" "}
-          {contracts?.["Exercice1"]?.address}
-          <br />
-          <strong>Variables d'état:</strong> nombre1 et nombre2 (initialisées
-          lors du déploiement)
-          <br />
-          <strong>Fonctions:</strong>
-          <ul style={{ margin: "8px 0", paddingLeft: "20px" }}>
-            <li>
-              <code>addition1()</code> - Fonction view : retourne nombre1 +
-              nombre2
-            </li>
-            <li>
-              <code>addition2(uint a, uint b)</code> - Fonction pure : retourne
-              a + b
-            </li>
-          </ul>
-        </div>
       </div>
 
       {/* State Variables Section */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>📊 Variables d'état du contrat</h3>
+        <h3 style={styles.sectionTitle}>Variables d'état du contrat</h3>
         <p style={styles.infoText}>
           Ces valeurs sont stockées de façon permanente sur la blockchain lors
           du déploiement.
         </p>
-
-        <button
-          onClick={loadStateVariables}
-          style={{
-            ...styles.button,
-            ...(loading === "state" ? styles.buttonDisabled : {}),
-          }}
-          disabled={loading === "state"}
-        >
-          {loading === "state"
-            ? "🔄 Chargement..."
-            : "📖 Lire les variables d'état"}
-        </button>
-
         {stateVariables && (
           <div style={styles.result}>
-            <div style={styles.resultTitle}>Variables d'état actuelles :</div>
             <div style={styles.resultValue}>
               nombre1 = {stateVariables.nombre1}
               <br />
@@ -377,7 +328,7 @@ export const Exercise1: React.FC = () => {
 
       {/* Addition1 Section - View Function */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>🔍 Fonction addition1() [VIEW]</h3>
+        <h3 style={styles.sectionTitle}>Fonction addition1() [VIEW]</h3>
         <p style={styles.infoText}>
           Cette fonction lit les variables d'état du contrat et retourne leur
           somme. Aucun coût en gas car elle ne modifie pas l'état de la
@@ -392,7 +343,7 @@ export const Exercise1: React.FC = () => {
           }}
           disabled={loading === "addition1"}
         >
-          {loading === "addition1" ? "🔄 Calcul..." : "🧮 Calculer addition1()"}
+          {loading === "addition1" ? "Calcul..." : "Calculer addition1()"}
         </button>
 
         {addition1Result && (
@@ -405,7 +356,7 @@ export const Exercise1: React.FC = () => {
 
       {/* Addition2 Section - Pure Function */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>⚡ Fonction addition2() [PURE]</h3>
+        <h3 style={styles.sectionTitle}>Fonction addition2() [PURE]</h3>
         <p style={styles.infoText}>
           Cette fonction prend deux paramètres et retourne leur somme. Elle
           n'accède pas aux variables d'état, c'est une fonction pure.
@@ -442,8 +393,8 @@ export const Exercise1: React.FC = () => {
           disabled={loading === "addition2"}
         >
           {loading === "addition2"
-            ? "🔄 Calcul..."
-            : `🧮 Calculer ${number1} + ${number2}`}
+            ? "Calcul..."
+            : `Calculer ${number1} + ${number2}`}
         </button>
 
         {addition2Result && (
@@ -457,10 +408,10 @@ export const Exercise1: React.FC = () => {
       </div>
 
       {/* Error Display */}
-      {error && <div style={styles.error}>❌ Erreur : {error}</div>}
+      {error && <div style={styles.error}>Erreur : {error}</div>}
 
       {/* Blockchain Info Component */}
-      <BlockchainInfo />
+      <BlockchainInfo contractAddress={contractAddress} />
 
       {/* Transaction Details Component */}
       <TransactionDetails transaction={null} />

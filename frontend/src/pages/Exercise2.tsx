@@ -145,7 +145,7 @@ export const Exercise2: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Get the Exercice2 contract instance
-  const contract = contracts?.["Exercice2"]?.contract;
+  const contract = contracts?.["Exercice2"];
 
   /**
    * Convert Ether to Wei using smart contract
@@ -207,7 +207,7 @@ export const Exercise2: React.FC = () => {
       ]);
 
       setWeiToEtherResult(result.toString());
-      console.log(`💱 Converted ${weiAmount} Wei to ${result.toString()} ETH`);
+      console.log(`Converted ${weiAmount} Wei to ${result.toString()} ETH`);
     } catch (err) {
       console.error("❌ Error converting Wei to Ether:", err);
       setError("Failed to convert Wei to Ether (function might not exist)");
@@ -222,7 +222,7 @@ export const Exercise2: React.FC = () => {
       <div style={styles.container}>
         <Navigation />
         <div style={styles.section}>
-          <h2 style={styles.title}>🔄 Connexion à la blockchain...</h2>
+          <h2 style={styles.title}>Connexion à la blockchain...</h2>
           <p style={styles.description}>
             Chargement du contrat Exercice2. Assurez-vous que Ganache est
             démarré.
@@ -235,10 +235,9 @@ export const Exercise2: React.FC = () => {
   return (
     <div style={styles.container}>
       <Navigation />
-
       {/* Page Header */}
       <div style={styles.header}>
-        <h1 style={styles.title}>💱 Exercice 2 : Conversion Ether/Wei</h1>
+        <h1 style={styles.title}>Exercice 2 : Conversion Ether/Wei</h1>
         <p style={styles.description}>
           Conversion entre les unités de cryptomonnaie Ethereum.
           <br />
@@ -246,39 +245,9 @@ export const Exercise2: React.FC = () => {
         </p>
       </div>
 
-      {/* Contract Information */}
-      <div style={styles.contractInfo}>
-        <h3 style={styles.sectionTitle}>📋 Informations du contrat</h3>
-        <div style={styles.infoText}>
-          <strong>Adresse du contrat:</strong>{" "}
-          {contracts?.["Exercice2"]?.address}
-          <br />
-          <strong>Variables d'état:</strong> Aucune (toutes les fonctions sont
-          pure)
-          <br />
-          <strong>Fonctions:</strong>
-          <ul style={{ margin: "8px 0", paddingLeft: "20px" }}>
-            <li>
-              <code>etherEnWei(uint montantEther)</code> - Convertit Ether en
-              Wei
-            </li>
-            <li>
-              <code>weiEnEther(uint montantWei)</code> - Convertit Wei en Ether
-            </li>
-          </ul>
-          <br />
-          <strong>Concept:</strong> Wei est la plus petite unité d'Ether, comme
-          les centimes pour les euros.
-        </div>
-      </div>
-
       {/* Ether to Wei Conversion */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>🔄 Conversion Ether → Wei</h3>
-        <p style={styles.infoText}>
-          Convertit un montant en Ether vers son équivalent en Wei. Utilise la
-          formule Solidity : <code>montantEther * 1 ether</code>
-        </p>
+        <h3 style={styles.sectionTitle}>Conversion Ether → Wei</h3>
 
         <div style={styles.formGroup}>
           <label style={styles.label}>Montant en Ether :</label>
@@ -301,8 +270,8 @@ export const Exercise2: React.FC = () => {
           disabled={loading === "etherToWei"}
         >
           {loading === "etherToWei"
-            ? "🔄 Conversion..."
-            : `💱 Convertir ${etherAmount} ETH en Wei`}
+            ? "Conversion..."
+            : `Convertir ${etherAmount} ETH en Wei`}
         </button>
 
         {etherToWeiResult && (
@@ -320,14 +289,9 @@ export const Exercise2: React.FC = () => {
           </div>
         )}
       </div>
-
       {/* Wei to Ether Conversion */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>🔄 Conversion Wei → Ether</h3>
-        <p style={styles.infoText}>
-          Convertit un montant en Wei vers son équivalent en Ether. Utilise la
-          division : <code>montantWei / 1 ether</code>
-        </p>
+        <h3 style={styles.sectionTitle}>Conversion Wei → Ether</h3>
 
         <div style={styles.formGroup}>
           <label style={styles.label}>Montant en Wei :</label>
@@ -349,8 +313,8 @@ export const Exercise2: React.FC = () => {
           disabled={loading === "weiToEther"}
         >
           {loading === "weiToEther"
-            ? "🔄 Conversion..."
-            : `💱 Convertir ${weiAmount} Wei en ETH`}
+            ? "Conversion..."
+            : `Convertir ${weiAmount} Wei en ETH`}
         </button>
 
         {weiToEtherResult && (
@@ -368,50 +332,10 @@ export const Exercise2: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Conversion Reference Table */}
-      <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>📊 Tableau de référence des unités</h3>
-        <div style={styles.infoText}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ borderBottom: "1px solid #495057" }}>
-                <th style={{ padding: "8px", textAlign: "left" }}>Unité</th>
-                <th style={{ padding: "8px", textAlign: "left" }}>
-                  Équivalent en Wei
-                </th>
-                <th style={{ padding: "8px", textAlign: "left" }}>
-                  Utilisation
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ padding: "8px" }}>1 Wei</td>
-                <td style={{ padding: "8px" }}>1</td>
-                <td style={{ padding: "8px" }}>Plus petite unité</td>
-              </tr>
-              <tr>
-                <td style={{ padding: "8px" }}>1 Gwei</td>
-                <td style={{ padding: "8px" }}>1,000,000,000</td>
-                <td style={{ padding: "8px" }}>Prix du gas</td>
-              </tr>
-              <tr>
-                <td style={{ padding: "8px" }}>1 Ether</td>
-                <td style={{ padding: "8px" }}>1,000,000,000,000,000,000</td>
-                <td style={{ padding: "8px" }}>Unité principale</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       {/* Error Display */}
-      {error && <div style={styles.error}>❌ Erreur : {error}</div>}
-
+      {error && <div style={styles.error}>Erreur : {error}</div>}
       {/* Blockchain Info Component */}
-      <BlockchainInfo />
-
+      <BlockchainInfo contractAddress={contract?.address} />
       {/* Transaction Details Component */}
       <TransactionDetails transaction={null} />
     </div>

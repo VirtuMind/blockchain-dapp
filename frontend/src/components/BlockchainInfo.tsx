@@ -28,16 +28,51 @@ const styles = {
     margin: "16px 0",
     color: "#fff",
   },
-  title: {
+  info_container: {
+    background: "#16213e",
+    border: "1px solid #495057",
+    borderRadius: "6px",
+    padding: "16px",
+    flex: "1",
+    minWidth: "300px",
+  },
+  subBlockTitle: {
     color: "#4dabf7",
+    marginBottom: "12px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    borderBottom: "1px solid #495057",
+    paddingBottom: "8px",
+  },
+  title: {
+    color: "#f7b34d",
     marginBottom: "12px",
     fontSize: "18px",
     fontWeight: "bold",
   },
+  note_title: {
+    color: "#9c9c9c",
+    marginBottom: "12px",
+    fontSize: "12px",
+    fontWeight: "bold",
+    fontStyle: "italic",
+  },
+
   infoGrid: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "16px",
+  },
+  subBlockWrapper: {
+    display: "flex",
+    flexDirection: "row" as const,
+    width: "100%",
+  },
+  subBlockContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
     gap: "12px",
+    alignItems: "start",
   },
   infoItem: {
     display: "flex",
@@ -54,6 +89,10 @@ const styles = {
     color: "#fff",
     fontSize: "14px",
     fontFamily: "monospace",
+    wordWrap: "break-word" as const,
+    overflowWrap: "break-word" as const,
+    whiteSpace: "normal" as const,
+    maxWidth: "100%",
   },
   status: {
     display: "inline-block",
@@ -81,13 +120,19 @@ const styles = {
 
 interface BlockchainData {
   networkId: string;
+  networkUrl: string;
   latestBlock: {
     number: number | bigint;
     hash: string;
+    parentHash: string;
     timestamp: number | bigint;
     gasUsed: number | bigint;
     gasLimit: number | bigint;
     transactionCount: number;
+    miner: string;
+    difficulty: string | number | bigint;
+    nonce: string | bigint;
+    size: number | bigint;
   };
 }
 
@@ -97,9 +142,12 @@ interface BalanceData {
   formatted: string;
 }
 
-export const BlockchainInfo: React.FC = () => {
+export const BlockchainInfo: React.FC<{ contractAddress: string }> = ({
+  contractAddress,
+}) => {
   // Get Web3 context from our custom hook
-  const { web3, currentAccount, networkId, isConnected, error } = useWeb3();
+  const { web3, currentAccount, networkId, isConnected, error, contracts } =
+    useWeb3();
 
   // Component state for blockchain data
   const [blockchainData, setBlockchainData] = useState<BlockchainData | null>(
@@ -166,7 +214,7 @@ export const BlockchainInfo: React.FC = () => {
   if (error) {
     return (
       <div style={styles.container}>
-        <h3 style={styles.title}>⚠️ Blockchain Connection</h3>
+        <h3 style={styles.title}>Blockchain Connection</h3>
         <div style={styles.error}>{error}</div>
       </div>
     );
@@ -176,81 +224,190 @@ export const BlockchainInfo: React.FC = () => {
   if (!web3 || loading) {
     return (
       <div style={styles.container}>
-        <h3 style={styles.title}>🔄 Loading Blockchain Info...</h3>
+        <h3 style={styles.title}>Loading Blockchain Info...</h3>
       </div>
     );
   }
 
   return (
     <div style={styles.container}>
-      <h3 style={styles.title}>🔗 Blockchain Information</h3>
+      <h3 style={styles.title}>Blockchain Information</h3>
+      <h6 style={styles.note_title}>
+        *Actualisé automatiquement chaque 10 secondes
+      </h6>
 
       <div style={styles.infoGrid}>
-        {/* Connection Status */}
-        <div style={styles.infoItem}>
-          <span style={styles.label}>Connection Status</span>
-          <span
-            style={{
-              ...styles.status,
-              ...(isConnected ? styles.connected : styles.disconnected),
-            }}
-          >
-            {isConnected ? "🟢 Connected" : "🔴 Disconnected"}
-          </span>
+        {/* First Sub-block: Network Information */}
+        <div style={styles.subBlockWrapper}>
+          <div style={styles.info_container}>
+            <div style={styles.subBlockTitle}>Informations sur le réseau</div>
+            <div style={styles.subBlockContainer}>
+              {/* Connection Status */}
+              <div style={styles.infoItem}>
+                <span style={styles.label}>État de la connexion</span>
+                <span
+                  style={{
+                    ...styles.status,
+                    ...(isConnected ? styles.connected : styles.disconnected),
+                  }}
+                >
+                  {isConnected ? "Connected" : "Disconnected"}
+                </span>
+              </div>
+
+              {/* Network ID */}
+              <div style={styles.infoItem}>
+                <span style={styles.label}>Network ID</span>
+                <span style={styles.value}>
+                  {networkId || "Unknown"}
+                  {networkId === 1337 && " (Ganache)"}
+                  {networkId === 5777 && " (Ganache)"}
+                </span>
+              </div>
+
+              {/* Network URL */}
+              <div style={styles.infoItem}>
+                <span style={styles.label}>Network URL</span>
+                <span style={styles.value}>
+                  {blockchainData?.networkUrl || "Unknown"}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Network Information */}
-        <div style={styles.infoItem}>
-          <span style={styles.label}>Network ID</span>
-          <span style={styles.value}>
-            {networkId || "Unknown"}
-            {networkId === 1337 && " (Ganache)"}
-            {networkId === 5777 && " (Ganache)"}
-          </span>
+        {/* Second Sub-block: Contract & Account Information */}
+        <div style={styles.subBlockWrapper}>
+          <div style={styles.info_container}>
+            <div style={styles.subBlockTitle}>Contract & Compte</div>
+            <div style={styles.subBlockContainer}>
+              {/* Current Account */}
+              <div style={styles.infoItem}>
+                <span style={styles.label}>COMPTE</span>
+                <span style={styles.value}>
+                  {currentAccount ? currentAccount : "Not connected"}
+                </span>
+              </div>
+
+              {/* Account Balance */}
+              <div style={styles.infoItem}>
+                <span style={styles.label}>SOLDE DU COMPTE</span>
+                <span style={styles.value}>
+                  {balance
+                    ? `${parseFloat(balance.ether).toFixed(4)} ETH`
+                    : "0 ETH"}
+                </span>
+              </div>
+
+              {/* Contract Information */}
+
+              <div style={styles.infoItem}>
+                <span style={styles.label}>Adresse de contrat</span>
+                <span style={styles.value}>{contractAddress || "N/A"}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Current Account */}
-        <div style={styles.infoItem}>
-          <span style={styles.label}>Current Account</span>
-          <span style={styles.value}>
-            {currentAccount ? shortenAddress(currentAccount) : "Not connected"}
-          </span>
-        </div>
-
-        {/* Account Balance */}
-        <div style={styles.infoItem}>
-          <span style={styles.label}>Balance</span>
-          <span style={styles.value}>
-            {balance ? `${parseFloat(balance.ether).toFixed(4)} ETH` : "0 ETH"}
-          </span>
-        </div>
-
-        {/* Latest Block */}
+        {/* Third Sub-block: Latest Block Information */}
         {blockchainData && (
-          <>
-            <div style={styles.infoItem}>
-              <span style={styles.label}>Latest Block</span>
-              <span style={styles.value}>
-                #{blockchainData.latestBlock.number.toString()}
-              </span>
-            </div>
+          <div style={styles.subBlockWrapper}>
+            <div style={styles.info_container}>
+              <div style={styles.subBlockTitle}>Dernier block</div>
+              <div style={styles.subBlockContainer}>
+                {/* Block Number */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Block Number</span>
+                  <span style={styles.value}>
+                    #{blockchainData.latestBlock.number.toString()}
+                  </span>
+                </div>
 
-            <div style={styles.infoItem}>
-              <span style={styles.label}>Block Timestamp</span>
-              <span style={styles.value}>
-                {new Date(
-                  Number(blockchainData.latestBlock.timestamp) * 1000
-                ).toLocaleTimeString()}
-              </span>
-            </div>
+                {/* Block Hash */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Block Hash</span>
+                  <span style={styles.value}>
+                    {blockchainData.latestBlock.hash}
+                  </span>
+                </div>
 
-            <div style={styles.infoItem}>
-              <span style={styles.label}>Transactions in Block</span>
-              <span style={styles.value}>
-                {blockchainData.latestBlock.transactionCount}
-              </span>
+                {/* Parent Hash */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Parent Hash</span>
+                  <span style={styles.value}>
+                    {blockchainData.latestBlock.parentHash}
+                  </span>
+                </div>
+
+                {/* Block Timestamp */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Block Timestamp</span>
+                  <span style={styles.value}>
+                    {new Date(
+                      Number(blockchainData.latestBlock.timestamp) * 1000
+                    ).toLocaleString()}
+                  </span>
+                </div>
+
+                {/* Transactions Count */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Transactions</span>
+                  <span style={styles.value}>
+                    {blockchainData.latestBlock.transactionCount}
+                  </span>
+                </div>
+
+                {/* Miner */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Miner</span>
+                  <span style={styles.value}>
+                    {blockchainData.latestBlock.miner}
+                  </span>
+                </div>
+
+                {/* Gas Information */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Gas Used / Limit</span>
+                  <span style={styles.value}>
+                    {Number(
+                      blockchainData.latestBlock.gasUsed
+                    ).toLocaleString()}{" "}
+                    /{" "}
+                    {Number(
+                      blockchainData.latestBlock.gasLimit
+                    ).toLocaleString()}
+                  </span>
+                </div>
+
+                {/* Block Size */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Block Size</span>
+                  <span style={styles.value}>
+                    {Number(blockchainData.latestBlock.size).toLocaleString()}{" "}
+                    bytes
+                  </span>
+                </div>
+
+                {/* Difficulty */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Difficulty</span>
+                  <span style={styles.value}>
+                    {Number(
+                      blockchainData.latestBlock.difficulty
+                    ).toLocaleString()}
+                  </span>
+                </div>
+
+                {/* Nonce */}
+                <div style={styles.infoItem}>
+                  <span style={styles.label}>Nonce</span>
+                  <span style={styles.value}>
+                    {blockchainData.latestBlock.nonce.toString()}
+                  </span>
+                </div>
+              </div>
             </div>
-          </>
+          </div>
         )}
       </div>
 
@@ -270,7 +427,7 @@ export const BlockchainInfo: React.FC = () => {
         }}
         disabled={loading}
       >
-        {loading ? "Refreshing..." : "🔄 Refresh Info"}
+        {loading ? "Refreshing..." : "Refresh Info"}
       </button>
     </div>
   );
