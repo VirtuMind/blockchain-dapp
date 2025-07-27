@@ -27,6 +27,23 @@ interface TransactionResult {
   blockNumber: number;
 }
 
+interface CompleteTransactionData {
+  transactionHash: string;
+  blockNumber: number;
+  gasUsed: number;
+  gasPrice: string;
+  status: boolean;
+  from: string;
+  to: string;
+  value: string;
+  nonce?: number;
+  transactionIndex?: number;
+  cumulativeGasUsed?: number;
+  logs?: object[];
+  timestamp?: number;
+  receipt: any; // Keep original receipt for backward compatibility
+}
+
 interface BalanceInfo {
   wei: string;
   ether: string;
@@ -238,7 +255,7 @@ export const sendContractTransaction = async (
   params: any[] = [],
   fromAccount: string,
   value: number = 0
-): Promise<TransactionResult> => {
+): Promise<CompleteTransactionData> => {
   try {
     // Prepare transaction
     const transaction = contract.methods[functionName](...params);
@@ -256,11 +273,31 @@ export const sendContractTransaction = async (
       value: value,
     });
 
+    // Get full transaction details for display
+    const web3 = new Web3(
+      window.ethereum || new Web3.providers.HttpProvider(GANACHE_URL)
+    );
+    const fullTransaction = await web3.eth.getTransaction(
+      receipt.transactionHash
+    );
+
+    // Return formatted transaction data that matches TransactionDetails component expectations
     return {
-      receipt,
       transactionHash: receipt.transactionHash,
-      gasUsed: receipt.gasUsed,
       blockNumber: receipt.blockNumber,
+      gasUsed: receipt.gasUsed,
+      gasPrice: fullTransaction?.gasPrice?.toString() || "0",
+      status: receipt.status,
+      from: receipt.from,
+      to: receipt.to,
+      value: fullTransaction?.value?.toString() || "0",
+      nonce: fullTransaction?.nonce ? Number(fullTransaction.nonce) : undefined,
+      transactionIndex: receipt.transactionIndex,
+      cumulativeGasUsed: receipt.cumulativeGasUsed,
+      logs: receipt.logs || [],
+      timestamp: Math.floor(Date.now() / 1000), // Current timestamp as fallback
+      // Keep the original receipt for backward compatibility
+      receipt,
     };
   } catch (error) {
     console.log("Error sending transaction:", error);
@@ -290,8 +327,27 @@ export const formatTransaction = (transactionData: any) => {
 /**
  * Convert Wei to Ether for display
  */
-export const weiToEther = (wei: string | number): string => {
-  return Web3.utils.fromWei(wei.toString(), "ether");
+export const weiToEther = (wei: string | number | undefined | null): string => {
+  // Handle undefined, null, or empty values
+  if (wei === undefined || wei === null || wei === "") {
+    return "0";
+  }
+
+  try {
+    // Convert to string safely
+    const weiString = wei.toString();
+
+    // Check if it's a valid number string
+    if (!/^\d+$/.test(weiString)) {
+      console.warn("Invalid wei value:", wei);
+      return "0";
+    }
+
+    return Web3.utils.fromWei(weiString, "ether");
+  } catch (error) {
+    console.error("Error converting wei to ether:", error, "Value:", wei);
+    return "0";
+  }
 };
 
 /**
@@ -332,27 +388,26 @@ export const formatNumber = (
 /**
  * Handle common Web3 errors
  */
-export const handleWeb3Error = (error: any): string => {
-  if (error.code === 4001) {
+export const handleWeb3Error = (error: unknown): string => {
+  const err = error as { code?: number; message?: string };
+
+  if (err.code === 4001) {
     return "Transaction cancelled by user";
   }
 
-  if (error.message && error.message.includes("insufficient funds")) {
+  if (err.message && err.message.includes("insufficient funds")) {
     return "Insufficient funds for transaction";
   }
 
-  if (
-    error.message &&
-    error.message.includes("gas required exceeds allowance")
-  ) {
+  if (err.message && err.message.includes("gas required exceeds allowance")) {
     return "Transaction requires more gas than allowed";
   }
 
-  if (error.message && error.message.includes("revert")) {
+  if (err.message && err.message.includes("revert")) {
     return "Transaction reverted - check contract conditions";
   }
 
-  return error.message || "Unknown blockchain error";
+  return err.message || "Unknown blockchain error";
 };
 
 export default {

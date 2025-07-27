@@ -1,27 +1,11 @@
-/**
- * CUSTOM REACT HOOK FOR WEB3 INTEGRATION
- *
- * This hook provides a React-friendly way to interact with blockchain
- * It manages the Web3 connection state and provides contract instances
- *
- * BLOCKCHAIN CONCEPTS EXPLAINED:
- * - Hook: Reusable React logic that manages state and side effects
- * - Web3 Instance: Connection to blockchain (Ganache or MetaMask)
- * - Accounts: Ethereum addresses that can send transactions
- * - Network ID: Identifies which blockchain network we're connected to
- * - Contract Instances: JavaScript objects representing deployed smart contracts
- */
-
 import { useState, useEffect } from "react";
 import Web3 from "web3";
 import { initWeb3, getContract } from "../utils/web3Utils";
-
-// TypeScript interfaces for better type safety
 interface Web3State {
   web3: Web3 | null;
   accounts: string[];
   networkId: number | null;
-  currentAccount: string | null;
+  currentAccount: string;
   isConnected: boolean;
 }
 
@@ -39,7 +23,7 @@ export const useWeb3 = () => {
     web3: null,
     accounts: [],
     networkId: null,
-    currentAccount: null,
+    currentAccount: "",
     isConnected: false,
   });
 
@@ -79,7 +63,7 @@ export const useWeb3 = () => {
           web3: web3Instance,
           accounts,
           networkId: Number(networkId),
-          currentAccount: accounts[0] || null,
+          currentAccount: accounts[0],
           isConnected: accounts.length > 0,
         });
 
@@ -114,8 +98,8 @@ export const useWeb3 = () => {
         "Exercice4", // Positive number check
         "Exercice5", // Parity check
         "Exercice6", // Array operations
-        "Exercice7", // Geometry container (contains Forme and Rectangle)
-        "Exercice8", // Payment container (contains Payment)
+        "Rectangle", // Geometry container (contains Forme and Rectangle)
+        "Payment",
       ];
 
       // Create contract instances for each exercise
@@ -171,7 +155,7 @@ export const useWeb3 = () => {
         setWeb3State((prev) => ({
           ...prev,
           accounts,
-          currentAccount: accounts[0] || null,
+          currentAccount: accounts[0],
           isConnected: accounts.length > 0,
         }));
       } catch (err) {
