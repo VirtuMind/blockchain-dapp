@@ -189,27 +189,6 @@ export const BlockchainInfo: React.FC<{ contractAddress: string }> = ({
     }
   }, [web3, currentAccount, isConnected]);
 
-  // Manual refresh function for the button
-  const handleRefresh = async () => {
-    if (!web3 || !currentAccount) return;
-
-    try {
-      setLoading(true);
-
-      // Get current blockchain state (block number, timestamp, etc.)
-      const blockInfo = await getBlockchainInfo(web3);
-      setBlockchainData(blockInfo);
-
-      // Get current account balance
-      const balanceInfo = await getBalance(web3, currentAccount);
-      setBalance(balanceInfo);
-    } catch (err) {
-      console.error("Failed to fetch blockchain info:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Show error state if connection failed
   if (error) {
     return (
@@ -251,7 +230,7 @@ export const BlockchainInfo: React.FC<{ contractAddress: string }> = ({
                     ...(isConnected ? styles.connected : styles.disconnected),
                   }}
                 >
-                  {isConnected ? "Connected" : "Disconnected"}
+                  {isConnected ? "🟢 Connected" : "🔴 Disconnected"}
                 </span>
               </div>
 
@@ -410,25 +389,6 @@ export const BlockchainInfo: React.FC<{ contractAddress: string }> = ({
           </div>
         )}
       </div>
-
-      {/* Manual Refresh Button */}
-      <button
-        onClick={handleRefresh}
-        style={{
-          marginTop: "12px",
-          padding: "8px 16px",
-          background: "#4dabf7",
-          color: "#000",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontSize: "14px",
-          fontWeight: "600",
-        }}
-        disabled={loading}
-      >
-        {loading ? "Refreshing..." : "Refresh Info"}
-      </button>
     </div>
   );
 };

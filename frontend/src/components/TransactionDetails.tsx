@@ -1,18 +1,17 @@
 /**
  * TRANSACTION DETAILS COMPONENT
  *
- * This component displays information about the last blockchain transaction:
- * - Transaction hash (unique identifier)
- * - Gas used and gas price
- * - Block number where transaction was included
- * - Transaction status (success/failure)
- * - Transaction timestamp
+ * This component displays information about the latest blockchain transaction:
+ * - Automatically fetches the most recent transaction from the blockchain
+ * - Refreshes every 10 seconds to show new transactions
+ * - Shows comprehensive transaction details including gas, addresses, and status
  *
- * This helps users understand what happened with their blockchain interactions
+ * This helps users understand recent blockchain activity
  */
 
-import React from "react";
-import { shortenAddress, weiToEther } from "../utils/web3Utils";
+import React, { useState, useEffect } from "react";
+import { useWeb3 } from "../hooks/useWeb3";
+import { weiToEther } from "../utils/web3Utils";
 
 // CSS styles for the component
 const styles = {
@@ -25,10 +24,15 @@ const styles = {
     color: "#fff",
   },
   title: {
-    color: "#51cf66",
-    marginBottom: "12px",
+    color: "#f7b34d",
     fontSize: "18px",
     fontWeight: "bold",
+  },
+  note_title: {
+    color: "#9c9c9c",
+    fontSize: "12px",
+    fontWeight: "bold",
+    fontStyle: "italic",
   },
   noTransaction: {
     color: "#868e96",
@@ -99,202 +103,252 @@ interface TransactionData {
   transactionIndex?: number;
   cumulativeGasUsed?: number;
   logs?: object[];
+  transactionType: "contract_creation" | "contract_call" | "ether_transfer";
 }
 
 interface TransactionDetailsProps {
-  transaction: TransactionData | null;
+  transactionCount?: number; // Total transaction count to display
   networkId?: number;
-  transactionCount?: number; // New prop for total transaction count
-}
-interface TransactionDetailsProps {
-  transaction: TransactionData | null;
-  networkId?: number;
-  transactionCount?: number; // New prop for total transaction count
 }
 
-export const TransactionDetails: React.FC<TransactionDetailsProps> = ({
-  transaction,
-  networkId,
-  transactionCount,
-}) => {
+export const TransactionDetails: React.FC<TransactionDetailsProps> = () => {
+  const { web3 } = useWeb3();
+  const [latestTransaction, setLatestTransaction] =
+    useState<TransactionData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   /**
-   * Generate block explorer URL based on network
-   * This allows users to view their transaction on external block explorers
+   * Fetch the latest transaction from the blockchain
    */
-  const getBlockExplorerUrl = (txHash: string): string => {
-    // For Ganache (local development), no block explorer available
-    if (networkId === 1337 || networkId === 5777) {
-      return "#"; // No external explorer for local networks
+  const fetchLatestTransaction = async () => {
+    if (!web3) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Get the latest block with full transaction objects
+      const latestBlock = await web3.eth.getBlock("latest", true);
+
+      if (
+        !latestBlock ||
+        !latestBlock.transactions ||
+        latestBlock.transactions.length === 0
+      ) {
+        setLatestTransaction(null);
+        return;
+      }
+
+      // Get the most recent transaction from the latest block
+      const transactions = latestBlock.transactions as any[];
+      const latestTx = transactions[transactions.length - 1];
+
+      // Get full transaction details
+      const fullTransaction = await web3.eth.getTransaction(
+        latestTx.hash || latestTx
+      );
+      const receipt = await web3.eth.getTransactionReceipt(
+        latestTx.hash || latestTx
+      );
+
+      if (!fullTransaction || !receipt) {
+        setLatestTransaction(null);
+        return;
+      }
+
+      let transactionType:
+        | "contract_creation"
+        | "contract_call"
+        | "ether_transfer";
+      if (!fullTransaction.to) {
+        transactionType = "contract_creation";
+      } else if (fullTransaction.input && fullTransaction.input !== "0x") {
+        transactionType = "contract_call";
+      } else {
+        transactionType = "ether_transfer";
+      }
+
+      const transactionData: TransactionData = {
+        transactionHash: fullTransaction.hash,
+        blockNumber: Number(fullTransaction.blockNumber) || 0,
+        gasUsed: Number(receipt.gasUsed),
+        gasPrice: fullTransaction.gasPrice?.toString() || "0",
+        status: Boolean(receipt.status),
+        from: fullTransaction.from,
+        to: fullTransaction.to || "",
+        value: fullTransaction.value?.toString() || "0",
+        nonce: Number(fullTransaction.nonce),
+        transactionIndex: Number(fullTransaction.transactionIndex),
+        cumulativeGasUsed: Number(receipt.cumulativeGasUsed),
+        logs: receipt.logs || [],
+        timestamp: Number(latestBlock.timestamp),
+        transactionType: transactionType,
+      };
+
+      setLatestTransaction(transactionData);
+    } catch (err) {
+      console.error("Error fetching latest transaction:", err);
+      setError("Failed to fetch latest transaction");
+      setLatestTransaction(null);
+    } finally {
+      setLoading(false);
     }
-
-    // For other networks, you could add Etherscan URLs:
-    // if (networkId === 1) return `https://etherscan.io/tx/${txHash}`; // Mainnet
-    // if (networkId === 3) return `https://ropsten.etherscan.io/tx/${txHash}`; // Ropsten
-
-    return `https://etherscan.io/tx/${txHash}`; // Default to mainnet
   };
 
   /**
-   * Open transaction in block explorer
+   * Set up auto-refresh every 10 seconds
    */
-  const openInExplorer = (txHash: string) => {
-    const url = getBlockExplorerUrl(txHash);
-    if (url !== "#") {
-      window.open(url, "_blank");
-    }
-  };
+  useEffect(() => {
+    if (!web3) return;
+
+    // Initial fetch
+    fetchLatestTransaction();
+
+    // Set up interval for auto-refresh
+    const interval = setInterval(fetchLatestTransaction, 10000); // 10 seconds
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, [web3]);
 
   return (
     <div style={styles.container}>
-      <h3 style={styles.title}>
-        Latest Transaction Details
-        {transactionCount && (
-          <span
-            style={{
-              fontSize: "14px",
-              fontWeight: "normal",
-              marginLeft: "8px",
-            }}
-          >
-            ({transactionCount} transactions total)
-          </span>
-        )}
-      </h3>
+      <h3 style={styles.title}>Dernière transaction</h3>
+      <h6 style={styles.note_title}>
+        *Actualisé automatiquement chaque 10 secondes
+      </h6>
 
-      {!transaction ? (
+      {error && (
+        <div style={{ ...styles.noTransaction, color: "#ff8787" }}>{error}</div>
+      )}
+
+      {!latestTransaction && !loading && !error ? (
         <div style={styles.noTransaction}>
           No recent transaction data available.
           <br />
-          Execute a contract function to see transaction details here.
+          Waiting for blockchain transactions...
         </div>
-      ) : (
+      ) : latestTransaction ? (
         <div style={styles.transactionGrid}>
           {/* Transaction Hash */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Transaction Hash</span>
-            <span
-              style={{ ...styles.value, ...styles.hash }}
-              onClick={() => openInExplorer(transaction.transactionHash)}
-              title="Click to view in block explorer"
-            >
-              {shortenAddress(transaction.transactionHash)}
+            <span style={styles.value}>
+              {latestTransaction.transactionHash}
             </span>
           </div>
-
           {/* Transaction Status */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Status</span>
             <span
               style={{
                 ...styles.status,
-                ...(transaction.status ? styles.success : styles.failure),
+                ...(latestTransaction.status ? styles.success : styles.failure),
               }}
             >
-              {transaction.status ? "Success" : "Failed"}
+              {latestTransaction.status ? "Success" : "Failed"}
             </span>
           </div>
-
           {/* Block Number */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Block Number</span>
-            <span style={styles.value}>#{transaction.blockNumber}</span>
+            <span style={styles.value}>#{latestTransaction.blockNumber}</span>
           </div>
-
           {/* Transaction Index */}
-          {transaction.transactionIndex !== undefined && (
+          {/* {latestTransaction.transactionIndex !== undefined && (
             <div style={styles.transactionItem}>
               <span style={styles.label}>Transaction Index</span>
-              <span style={styles.value}>{transaction.transactionIndex}</span>
+              <span style={styles.value}>
+                {latestTransaction.transactionIndex}
+              </span>
             </div>
-          )}
-
+          )} */}
+          {/* Transaction Type */}
+          <div style={styles.transactionItem}>
+            <span style={styles.label}>Transaction Type</span>
+            <span style={styles.value}>
+              {latestTransaction.transactionType === "contract_creation"
+                ? "Contract Creation"
+                : latestTransaction.transactionType === "contract_call"
+                ? "Contract Call"
+                : latestTransaction.transactionType === "ether_transfer"
+                ? "Ether Transfer"
+                : "Unknown"}
+            </span>
+          </div>
           {/* Nonce */}
-          {transaction.nonce !== undefined && (
+          {latestTransaction.nonce !== undefined && (
             <div style={styles.transactionItem}>
               <span style={styles.label}>Nonce</span>
-              <span style={styles.value}>{transaction.nonce}</span>
+              <span style={styles.value}>{latestTransaction.nonce}</span>
             </div>
           )}
-
           {/* Gas Information */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Gas Used</span>
             <span style={styles.value}>
-              {transaction.gasUsed.toLocaleString()} gas
+              {latestTransaction.gasUsed.toLocaleString()} gas
             </span>
           </div>
-
-          {/* Cumulative Gas Used */}
-          {transaction.cumulativeGasUsed && (
-            <div style={styles.transactionItem}>
-              <span style={styles.label}>Cumulative Gas Used</span>
-              <span style={styles.value}>
-                {transaction.cumulativeGasUsed.toLocaleString()} gas
-              </span>
-            </div>
-          )}
-
           <div style={styles.transactionItem}>
             <span style={styles.label}>Gas Price</span>
             <span style={styles.value}>
-              {weiToEther(transaction.gasPrice)} ETH
+              {weiToEther(latestTransaction.gasPrice)} ETH
             </span>
           </div>
-
           {/* Transaction Cost */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Transaction Cost</span>
             <span style={styles.value}>
               {weiToEther(
                 (
-                  BigInt(transaction.gasUsed) * BigInt(transaction.gasPrice)
+                  BigInt(latestTransaction.gasUsed) *
+                  BigInt(latestTransaction.gasPrice)
                 ).toString()
               )}{" "}
               ETH
             </span>
           </div>
-
           {/* From Address */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>From</span>
-            <span style={styles.value}>{shortenAddress(transaction.from)}</span>
+            <span style={styles.value}>{latestTransaction.from}</span>
           </div>
-
           {/* To Address */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>To (Contract)</span>
-            <span style={styles.value}>{shortenAddress(transaction.to)}</span>
+            <span style={styles.value}>
+              {latestTransaction.to ? latestTransaction.to : "N/A"}
+            </span>
           </div>
-
           {/* Value Transferred */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Value</span>
             <span style={styles.value}>
-              {weiToEther(transaction.value)} ETH
+              {weiToEther(latestTransaction.value)} ETH
             </span>
           </div>
-
           {/* Logs/Events */}
-          {transaction.logs && transaction.logs.length > 0 && (
+          {latestTransaction.logs && latestTransaction.logs.length > 0 && (
             <div style={styles.transactionItem}>
               <span style={styles.label}>Events/Logs</span>
               <span style={styles.value}>
-                {transaction.logs.length} events emitted
+                {latestTransaction.logs.length} events emitted
               </span>
             </div>
           )}
-
-          {/* Timestamp (if available) */}
-          {transaction.timestamp && (
+          {/* Timestamp */}
+          {latestTransaction.timestamp && (
             <div style={styles.transactionItem}>
               <span style={styles.label}>Timestamp</span>
               <span style={styles.value}>
-                {new Date(transaction.timestamp * 1000).toLocaleString()}
+                {new Date(latestTransaction.timestamp * 1000).toLocaleString()}
               </span>
             </div>
           )}
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

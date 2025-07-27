@@ -1,18 +1,3 @@
-/**
- * EXERCISE 1 PAGE - ADDITION OPERATIONS
- *
- * This page demonstrates interaction with the Exercice1 smart contract which:
- * - Has two state variables (nombre1, nombre2)
- * - Provides addition1() view function (sums state variables)
- * - Provides addition2() pure function (sums parameters)
- *
- * SMART CONTRACT INTERACTION CONCEPTS:
- * - View functions: Read blockchain state without cost (no gas)
- * - Pure functions: Don't access state, just compute (no gas)
- * - State variables: Data stored permanently on blockchain
- * - Contract calls: JavaScript calling Solidity functions via Web3
- */
-
 import React, { useState, useEffect } from "react";
 import { useWeb3 } from "../hooks/useWeb3";
 import { Navigation } from "../components/Navigation";
@@ -147,6 +132,7 @@ export const Exercise1: React.FC = () => {
   const [addition2Result, setAddition2Result] = useState<string | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [transactionCount, setTransactionCount] = useState<number>(0);
 
   // Get the Exercice1 contract instance
   const contract = contracts?.["Exercice1"]?.contract;
@@ -262,6 +248,14 @@ export const Exercise1: React.FC = () => {
           nombre2: nombre2Value.toString(),
         });
 
+        // Get blockchain info including transaction count
+        try {
+          const latestBlock = await web3.eth.getBlock("latest", true);
+          setTransactionCount(latestBlock?.transactions?.length || 0);
+        } catch (err) {
+          console.error("Error getting blockchain info:", err);
+        }
+
         console.log("State variables loaded:", {
           nombre1Value,
           nombre2Value,
@@ -302,19 +296,12 @@ export const Exercise1: React.FC = () => {
       {/* Page Header */}
       <div style={styles.header}>
         <h1 style={styles.title}>Exercice 1 : Addition de nombres</h1>
-        <p style={styles.description}>
-          Interaction avec un contrat qui stocke deux nombres et fournit des
-          fonctions d'addition.
-        </p>
       </div>
 
       {/* State Variables Section */}
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Variables d'état du contrat</h3>
-        <p style={styles.infoText}>
-          Ces valeurs sont stockées de façon permanente sur la blockchain lors
-          du déploiement.
-        </p>
+
         {stateVariables && (
           <div style={styles.result}>
             <div style={styles.resultValue}>
@@ -328,12 +315,9 @@ export const Exercise1: React.FC = () => {
 
       {/* Addition1 Section - View Function */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>Fonction addition1() [VIEW]</h3>
-        <p style={styles.infoText}>
-          Cette fonction lit les variables d'état du contrat et retourne leur
-          somme. Aucun coût en gas car elle ne modifie pas l'état de la
-          blockchain.
-        </p>
+        <h3 style={styles.sectionTitle}>
+          Addition de nombres stockés en contrat
+        </h3>
 
         <button
           onClick={callAddition1}
@@ -343,12 +327,12 @@ export const Exercise1: React.FC = () => {
           }}
           disabled={loading === "addition1"}
         >
-          {loading === "addition1" ? "Calcul..." : "Calculer addition1()"}
+          {loading === "addition1" ? "Calcul..." : "Calculer"}
         </button>
 
         {addition1Result && (
           <div style={styles.result}>
-            <div style={styles.resultTitle}>Résultat de addition1() :</div>
+            <div style={styles.resultTitle}>Résultat :</div>
             <div style={styles.resultValue}>{addition1Result}</div>
           </div>
         )}
@@ -356,11 +340,9 @@ export const Exercise1: React.FC = () => {
 
       {/* Addition2 Section - Pure Function */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>Fonction addition2() [PURE]</h3>
-        <p style={styles.infoText}>
-          Cette fonction prend deux paramètres et retourne leur somme. Elle
-          n'accède pas aux variables d'état, c'est une fonction pure.
-        </p>
+        <h3 style={styles.sectionTitle}>
+          Addition de deux nombres (fonction pure)
+        </h3>
 
         <div style={styles.formGroup}>
           <label style={styles.label}>Premier nombre (a) :</label>
@@ -392,16 +374,12 @@ export const Exercise1: React.FC = () => {
           }}
           disabled={loading === "addition2"}
         >
-          {loading === "addition2"
-            ? "Calcul..."
-            : `Calculer ${number1} + ${number2}`}
+          {loading === "addition2" ? "Calcul..." : `Calculer`}
         </button>
 
         {addition2Result && (
           <div style={styles.result}>
-            <div style={styles.resultTitle}>
-              Résultat de addition2({number1}, {number2}) :
-            </div>
+            <div style={styles.resultTitle}>Résultat :</div>
             <div style={styles.resultValue}>{addition2Result}</div>
           </div>
         )}
@@ -414,7 +392,7 @@ export const Exercise1: React.FC = () => {
       <BlockchainInfo contractAddress={contractAddress} />
 
       {/* Transaction Details Component */}
-      <TransactionDetails transaction={null} />
+      <TransactionDetails />
     </div>
   );
 };

@@ -8,6 +8,8 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useWeb3 } from "../hooks/useWeb3";
+import { shortenAddress } from "../utils/web3Utils";
 
 // CSS styles for the navigation
 const styles = {
@@ -58,6 +60,7 @@ const styles = {
 
 export const Navigation: React.FC = () => {
   const location = useLocation();
+  const { accounts, currentAccount, switchAccount } = useWeb3();
 
   // Check if current route is active
   const isActive = (path: string) => location.pathname === path;
@@ -93,7 +96,6 @@ export const Navigation: React.FC = () => {
             Ex 1
           </Link>
         </li>
-
         <li style={styles.navItem}>
           <Link
             to="/exercice2"
@@ -105,7 +107,6 @@ export const Navigation: React.FC = () => {
             Ex 2
           </Link>
         </li>
-
         <li style={styles.navItem}>
           <Link
             to="/exercice3"
@@ -117,7 +118,6 @@ export const Navigation: React.FC = () => {
             Ex 3
           </Link>
         </li>
-
         <li style={styles.navItem}>
           <Link
             to="/exercice4"
@@ -129,7 +129,6 @@ export const Navigation: React.FC = () => {
             Ex 4
           </Link>
         </li>
-
         <li style={styles.navItem}>
           <Link
             to="/exercice5"
@@ -141,7 +140,6 @@ export const Navigation: React.FC = () => {
             Ex 5
           </Link>
         </li>
-
         <li style={styles.navItem}>
           <Link
             to="/exercice6"
@@ -153,7 +151,6 @@ export const Navigation: React.FC = () => {
             Ex 6
           </Link>
         </li>
-
         <li style={styles.navItem}>
           <Link
             to="/exercice7"
@@ -165,7 +162,6 @@ export const Navigation: React.FC = () => {
             Ex 7
           </Link>
         </li>
-
         <li style={styles.navItem}>
           <Link
             to="/exercice8"

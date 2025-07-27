@@ -1,19 +1,5 @@
-/**
- * HOME PAGE COMPONENT
- *
- * This is the main landing page of the dApp that displays:
- * - Welcome message and project description
- * - Menu with 8 links to different exercise pages
- * - Blockchain connection status
- * - Overview of all available exercises
- *
- * As specified in the requirements, this page serves as the main navigation hub
- */
-
 import React from "react";
 import { Link } from "react-router-dom";
-import { useWeb3 } from "../hooks/useWeb3";
-import { BlockchainInfo } from "../components/BlockchainInfo";
 
 // CSS styles for the home page
 const styles = {
@@ -34,7 +20,7 @@ const styles = {
   },
   subtitle: {
     fontSize: "1.2rem",
-    color: "#74c0fc",
+    color: "#c282e0",
     marginBottom: "24px",
   },
   description: {
@@ -172,8 +158,6 @@ const exercises = [
 ];
 
 export const HomePage: React.FC = () => {
-  const { isConnected, loading, error, hasContracts } = useWeb3();
-
   // Handle mouse hover effects
   const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const target = e.currentTarget;
@@ -203,40 +187,6 @@ export const HomePage: React.FC = () => {
         </h1>
         <h2 style={styles.subtitle}>Travail réalisé par Younes Khoubaz</h2>
       </div>
-
-      {/* Connection Status */}
-      {/* <div style={styles.statusSection}>
-        <h3 style={styles.statusTitle}>📡 État de la connexion</h3>
-        <p style={styles.statusText}>
-          {loading && (
-            <span style={styles.loadingText}>
-              Connexion à la blockchain en cours...
-            </span>
-          )}
-          {error && (
-            <span style={styles.errorText}>Erreur de connexion : {error}</span>
-          )}
-          {isConnected && hasContracts && (
-            <span>
-              Connecté à la blockchain ! Tous les contrats sont chargés et prêts
-              à être utilisés.
-            </span>
-          )}
-          {isConnected && !hasContracts && (
-            <span style={styles.loadingText}>
-              Connecté mais chargement des contrats en cours...
-            </span>
-          )}
-          {!isConnected && !loading && !error && (
-            <span style={styles.errorText}>
-              🔌 Non connecté à la blockchain. Vérifiez que Ganache est démarré.
-            </span>
-          )}
-        </p>
-      </div> */}
-
-      {/* Blockchain Info Component */}
-      {/* <BlockchainInfo /> */}
 
       {/* Exercise Menu */}
       <div style={styles.exerciseGrid}>

@@ -14,6 +14,9 @@ const styles = {
   },
   header: { textAlign: "center" as const, marginBottom: "30px" },
   title: { fontSize: "2rem", color: "#4dabf7", marginBottom: "12px" },
+  formGroup: {
+    marginBottom: "16px",
+  },
   section: {
     background: "#1a1a2e",
     border: "1px solid #16213e",
@@ -22,7 +25,7 @@ const styles = {
     marginBottom: "24px",
   },
   input: {
-    width: "100%",
+    width: "50%",
     padding: "12px",
     background: "#16213e",
     border: "1px solid #495057",
@@ -58,6 +61,7 @@ export const Exercise5: React.FC = () => {
   const [result, setResult] = useState<string>("");
 
   const contract = contracts?.["Exercice5"]?.contract;
+  const contractAddress = contracts?.["Exercice5"]?.address;
 
   const checkParity = async () => {
     if (!contract || !number) return;
@@ -83,24 +87,25 @@ export const Exercise5: React.FC = () => {
     <div style={styles.container}>
       <Navigation />
       <div style={styles.header}>
-        <h1 style={styles.title}>🔢 Exercice 5 : Vérification parité</h1>
+        <h1 style={styles.title}>Exercice 5 : Vérification parité</h1>
       </div>
       <div style={styles.section}>
-        <p>Contrat: {contracts?.["Exercice5"]?.address}</p>
-        <input
-          type="number"
-          value={number}
-          onChange={(e) => setNumber(e.target.value)}
-          style={styles.input}
-          placeholder="Entrez un nombre"
-        />
+        <div style={styles.formGroup}>
+          <input
+            type="number"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            style={styles.input}
+            placeholder="Entrez un nombre"
+          />{" "}
+        </div>
         <button onClick={checkParity} style={styles.button}>
-          Vérifier parité
+          Vérifier
         </button>
         {result && <div style={styles.result}>Résultat: {result}</div>}
       </div>
-      <BlockchainInfo />
-      <TransactionDetails transaction={null} />
+      <BlockchainInfo contractAddress={contractAddress} />
+      <TransactionDetails />
     </div>
   );
 };

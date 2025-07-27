@@ -1,18 +1,3 @@
-/**
- * EXERCISE 2 PAGE - ETHER/WEI CONVERSION
- *
- * This page demonstrates interaction with the Exercice2 smart contract which:
- * - Converts Ether amounts to Wei (etherEnWei function)
- * - Converts Wei amounts to Ether (weiEnEther function)
- * - Both functions are pure (no state variables)
- *
- * CRYPTOCURRENCY CONVERSION CONCEPTS:
- * - 1 Ether = 10^18 Wei (1,000,000,000,000,000,000 Wei)
- * - Wei is the smallest unit of Ether (like cents to dollars)
- * - Pure functions: Don't access blockchain state, just compute
- * - Solidity's built-in unit conversions (1 ether = 10^18 wei)
- */
-
 import React, { useState } from "react";
 import { useWeb3 } from "../hooks/useWeb3";
 import { Navigation } from "../components/Navigation";
@@ -66,7 +51,7 @@ const styles = {
     marginBottom: "8px",
   },
   input: {
-    width: "100%",
+    width: "50%",
     padding: "12px",
     background: "#16213e",
     border: "1px solid #495057",
@@ -145,7 +130,8 @@ export const Exercise2: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Get the Exercice2 contract instance
-  const contract = contracts?.["Exercice2"];
+  const contract = contracts?.["Exercice2"]?.contract;
+  const contractAddress = contracts?.["Exercice2"]?.address;
 
   /**
    * Convert Ether to Wei using smart contract
@@ -172,11 +158,8 @@ export const Exercise2: React.FC = () => {
       ]);
 
       setEtherToWeiResult(result.toString());
-      console.log(
-        `💱 Converted ${etherAmount} ETH to ${result.toString()} Wei`
-      );
     } catch (err) {
-      console.error("❌ Error converting Ether to Wei:", err);
+      console.error("Error converting Ether to Wei:", err);
       setError("Failed to convert Ether to Wei");
     } finally {
       setLoading(null);
@@ -207,9 +190,8 @@ export const Exercise2: React.FC = () => {
       ]);
 
       setWeiToEtherResult(result.toString());
-      console.log(`Converted ${weiAmount} Wei to ${result.toString()} ETH`);
     } catch (err) {
-      console.error("❌ Error converting Wei to Ether:", err);
+      console.error("Error converting Wei to Ether:", err);
       setError("Failed to convert Wei to Ether (function might not exist)");
     } finally {
       setLoading(null);
@@ -240,14 +222,13 @@ export const Exercise2: React.FC = () => {
         <h1 style={styles.title}>Exercice 2 : Conversion Ether/Wei</h1>
         <p style={styles.description}>
           Conversion entre les unités de cryptomonnaie Ethereum.
-          <br />
-          <strong>1 Ether = 1,000,000,000,000,000,000 Wei (10^18)</strong>
+          <br />1 Ether = 1,000,000,000,000,000,000 Wei
         </p>
       </div>
 
       {/* Ether to Wei Conversion */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>Conversion Ether → Wei</h3>
+        <h3 style={styles.sectionTitle}>Conversion Ether en Wei</h3>
 
         <div style={styles.formGroup}>
           <label style={styles.label}>Montant en Ether :</label>
@@ -269,9 +250,7 @@ export const Exercise2: React.FC = () => {
           }}
           disabled={loading === "etherToWei"}
         >
-          {loading === "etherToWei"
-            ? "Conversion..."
-            : `Convertir ${etherAmount} ETH en Wei`}
+          {loading === "etherToWei" ? "Conversion..." : `Convertir`}
         </button>
 
         {etherToWeiResult && (
@@ -282,16 +261,13 @@ export const Exercise2: React.FC = () => {
             </div>
             <div
               style={{ ...styles.infoText, marginTop: "8px", fontSize: "12px" }}
-            >
-              Vérification : {parseInt(etherAmount) * Math.pow(10, 18)} Wei
-              (calcul JavaScript)
-            </div>
+            ></div>
           </div>
         )}
       </div>
       {/* Wei to Ether Conversion */}
       <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>Conversion Wei → Ether</h3>
+        <h3 style={styles.sectionTitle}>Conversion Wei en Ether</h3>
 
         <div style={styles.formGroup}>
           <label style={styles.label}>Montant en Wei :</label>
@@ -312,9 +288,7 @@ export const Exercise2: React.FC = () => {
           }}
           disabled={loading === "weiToEther"}
         >
-          {loading === "weiToEther"
-            ? "Conversion..."
-            : `Convertir ${weiAmount} Wei en ETH`}
+          {loading === "weiToEther" ? "Conversion..." : `Convertir`}
         </button>
 
         {weiToEtherResult && (
@@ -325,19 +299,16 @@ export const Exercise2: React.FC = () => {
             </div>
             <div
               style={{ ...styles.infoText, marginTop: "8px", fontSize: "12px" }}
-            >
-              Vérification : {parseInt(weiAmount) / Math.pow(10, 18)} ETH
-              (calcul JavaScript)
-            </div>
+            ></div>
           </div>
         )}
       </div>
       {/* Error Display */}
       {error && <div style={styles.error}>Erreur : {error}</div>}
       {/* Blockchain Info Component */}
-      <BlockchainInfo contractAddress={contract?.address} />
+      <BlockchainInfo contractAddress={contractAddress} />
       {/* Transaction Details Component */}
-      <TransactionDetails transaction={null} />
+      <TransactionDetails />
     </div>
   );
 };

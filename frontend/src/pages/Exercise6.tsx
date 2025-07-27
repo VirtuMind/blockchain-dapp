@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWeb3 } from "../hooks/useWeb3";
 import { Navigation } from "../components/Navigation";
 import { BlockchainInfo } from "../components/BlockchainInfo";
 import { TransactionDetails } from "../components/TransactionDetails";
-import { callContractFunction } from "../utils/web3Utils";
+import {
+  callContractFunction,
+  sendContractTransaction,
+} from "../utils/web3Utils";
 
 const styles = {
   container: {
@@ -21,8 +24,22 @@ const styles = {
     padding: "24px",
     marginBottom: "24px",
   },
+  sectionTitle: {
+    color: "#51cf66",
+    fontSize: "1.3rem",
+    marginBottom: "16px",
+    fontWeight: "bold",
+  },
+  formGroup: {
+    marginBottom: "16px",
+  },
+  infoText: {
+    color: "#bae6fd",
+    fontSize: "14px",
+    lineHeight: "1.5",
+  },
   input: {
-    width: "100%",
+    width: "50%",
     padding: "12px",
     background: "#16213e",
     border: "1px solid #495057",
@@ -54,41 +71,63 @@ const styles = {
 };
 
 export const Exercise6: React.FC = () => {
-  const { contracts, isReady } = useWeb3();
+  const { contracts, isReady, currentAccount } = useWeb3();
+  const [array, setArray] = useState<number[]>([]);
   const [index, setIndex] = useState<string>("0");
-  const [result, setResult] = useState<string>("");
+  const [sum, setSum] = useState<string>("Clicker pour calculer");
+  const [number, setNumber] = useState<string>("");
+  const [addResult, setAddResult] = useState<string>("");
+  const [getResult, setGetResult] = useState<string>("");
 
   const contract = contracts?.["Exercice6"]?.contract;
+  const contractAddress = contracts?.["Exercice6"]?.address;
 
-  const getNumbers = async () => {
+  useEffect(() => {
     if (!contract) return;
-    try {
-      const res = await callContractFunction(contract, "getNombres", []);
-      setResult("Nombres: " + res.toString());
-    } catch {
-      setResult("Erreur lors de la récupération");
-    }
-  };
+    const fetchTableau = async () => {
+      const res = await callContractFunction(contract, "afficheTableau", []);
+      setArray(res);
+    };
+    fetchTableau();
+  }, [contract, addResult]);
 
   const getSum = async () => {
-    if (!contract) return;
+    if (!contract || !index) return;
     try {
-      const res = await callContractFunction(contract, "getSomme", []);
-      setResult("Somme: " + res.toString());
+      const res = await callContractFunction(contract, "calculerSomme", [
+        parseInt(index),
+      ]);
+      setSum(`La somme: ${res.toString()}`);
     } catch {
-      setResult("Erreur lors du calcul");
+      setSum("Erreur");
     }
   };
 
-  const getNumber = async () => {
+  const ajouterNombre = async () => {
+    if (!contract || !number) return;
+    try {
+      console.log("Ajout du nombre:", number);
+      await sendContractTransaction(
+        contract,
+        "ajouterNombre",
+        [parseInt(number)],
+        currentAccount
+      );
+      setAddResult(`Nombre ajouté: ${number}`); // Reset input after adding
+    } catch {
+      setAddResult("Erreur lors de l'ajout du nombre");
+    }
+  };
+
+  const getElement = async () => {
     if (!contract || !index) return;
     try {
-      const res = await callContractFunction(contract, "getNombre", [
+      const res = await callContractFunction(contract, "getElement", [
         parseInt(index),
       ]);
-      setResult(`Nombre à l'index ${index}: ${res.toString()}`);
-    } catch {
-      setResult("Index invalide");
+      setGetResult(`Élément à l'index ${index} est ${res.toString()}`);
+    } catch (err) {
+      setGetResult(err.message);
     }
   };
 
@@ -107,33 +146,60 @@ export const Exercise6: React.FC = () => {
         <h1 style={styles.title}>Exercice 6 : Opérations sur tableaux</h1>
       </div>
       <div style={styles.section}>
-        <p>Contrat: {contracts?.["Exercice6"]?.address}</p>
+        <div style={styles.sectionTitle}>Tableau de Nombres</div>
+        <div style={styles.result}>{array.join(", ")}</div>
+      </div>
+      {/* LA SOMME */}
+      <div style={styles.section}>
+        <h3 style={styles.sectionTitle}>Calculer la somme</h3>
 
-        <button onClick={getNumbers} style={styles.button}>
-          Voir tous les nombres
-        </button>
-
+        <div style={styles.formGroup}>
+          <div style={styles.result}>{sum}</div>
+        </div>
         <button onClick={getSum} style={styles.button}>
-          ➕ Calculer somme
+          Calculer
         </button>
+      </div>
+      {/* Ajouter un nombre */}
+      <div style={styles.section}>
+        <h3 style={styles.sectionTitle}>Ajouter un nombre</h3>
+        <div style={styles.formGroup}>
+          <input
+            type="number"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            style={styles.input}
+            placeholder="Entrez un nombre"
+          />
+        </div>
 
-        <div style={{ marginTop: "16px" }}>
+        {addResult && <p style={styles.infoText}>{addResult}</p>}
+
+        <button onClick={ajouterNombre} style={styles.button}>
+          Ajouter
+        </button>
+      </div>
+
+      {/* Get element */}
+      <div style={styles.section}>
+        <h3 style={styles.sectionTitle}>Recupérer un élément</h3>
+        <div style={styles.formGroup}>
           <input
             type="number"
             value={index}
             onChange={(e) => setIndex(e.target.value)}
             style={styles.input}
-            placeholder="Index à consulter"
+            placeholder="Entrez un index"
           />
-          <button onClick={getNumber} style={styles.button}>
-            Obtenir nombre par index
-          </button>
         </div>
-
-        {result && <div style={styles.result}>{result}</div>}
+        {getResult && <p style={styles.infoText}>{getResult}</p>}
+        <button onClick={getElement} style={styles.button}>
+          Récupérer
+        </button>
       </div>
-      <BlockchainInfo />
-      <TransactionDetails transaction={null} />
+
+      <BlockchainInfo contractAddress={contractAddress} />
+      <TransactionDetails />
     </div>
   );
 };

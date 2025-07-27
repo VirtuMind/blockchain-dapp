@@ -1,12 +1,3 @@
-/**
- * EXERCISE 3 PAGE - STRING MANAGEMENT (GestionChaines)
- *
- * This page demonstrates interaction with the GestionChaines smart contract which:
- * - Manages a string state variable (message)
- * - Provides functions for string manipulation: set, get, concatenate, length, compare
- * - Shows string handling concepts in Solidity
- */
-
 import React, { useState, useEffect } from "react";
 import { useWeb3 } from "../hooks/useWeb3";
 import { Navigation } from "../components/Navigation";
@@ -50,7 +41,7 @@ const styles = {
     marginBottom: "8px",
   },
   input: {
-    width: "100%",
+    width: "50%",
     padding: "12px",
     background: "#16213e",
     border: "1px solid #495057",
@@ -127,9 +118,9 @@ export const Exercise3: React.FC = () => {
   const [compareResult, setCompareResult] = useState<string>("");
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [lastTransaction, setLastTransaction] = useState<any>(null);
 
   const contract = contracts?.["Exercice3"]?.contract;
+  const contractAddress = contracts?.["Exercice3"]?.address;
 
   // Load current message
   const getMessage = async () => {
@@ -151,13 +142,12 @@ export const Exercise3: React.FC = () => {
     try {
       setLoading("setMessage");
       setError(null);
-      const result = await sendContractTransaction(
+      await sendContractTransaction(
         contract,
         "setMessage",
         [newMessage],
         currentAccount
       );
-      setLastTransaction(result);
       await getMessage(); // Refresh current message
     } catch (err) {
       setError("Failed to set message");
@@ -261,32 +251,12 @@ export const Exercise3: React.FC = () => {
         </p>
       </div>
 
-      <div style={styles.contractInfo}>
-        <h3 style={styles.sectionTitle}>Informations du contrat</h3>
-        <div style={styles.infoText}>
-          <strong>Adresse du contrat:</strong>{" "}
-          {contracts?.["Exercice3"]?.address}
-          <br />
-          <strong>Variable d'état:</strong> message (string)
-          <br />
-          <strong>Fonctions:</strong> setMessage, getMessage, concatener,
-          concatenerAvec, longueur, comparer
-        </div>
-      </div>
-
       {/* Current Message */}
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Message actuel</h3>
-        <button
-          onClick={getMessage}
-          style={styles.button}
-          disabled={loading === "getMessage"}
-        >
-          {loading === "getMessage" ? "Chargement..." : "Lire le message"}
-        </button>
+
         {currentMessage && (
           <div style={styles.result}>
-            <div style={styles.resultTitle}>Message stocké :</div>
             <div style={styles.resultValue}>"{currentMessage}"</div>
           </div>
         )}
@@ -440,8 +410,8 @@ export const Exercise3: React.FC = () => {
 
       {error && <div style={styles.error}>Erreur : {error}</div>}
 
-      <BlockchainInfo />
-      <TransactionDetails transaction={lastTransaction} />
+      <BlockchainInfo contractAddress={contractAddress} />
+      <TransactionDetails />
     </div>
   );
 };
