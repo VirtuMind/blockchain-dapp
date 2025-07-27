@@ -36,10 +36,6 @@ export const useWeb3 = () => {
   // Error state to display connection problems
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Initialize Web3 connection when component mounts
-   * This runs once when the hook is first used
-   */
   useEffect(() => {
     const initializeWeb3 = async () => {
       try {
@@ -70,7 +66,7 @@ export const useWeb3 = () => {
         // Load all contract instances for the 8 exercises
         await loadContracts(web3Instance);
       } catch (err) {
-        console.error("❌ Failed to initialize Web3:", err);
+        console.error("Failed to initialize Web3:", err);
         setError(
           err instanceof Error ? err.message : "Failed to connect to blockchain"
         );
@@ -80,7 +76,7 @@ export const useWeb3 = () => {
     };
 
     initializeWeb3();
-  }, []); // Empty dependency array = run once on mount
+  }, []);
 
   /**
    * Load contract instances for all 8 exercises
@@ -92,13 +88,13 @@ export const useWeb3 = () => {
 
       // List of all contract names from our exercises (UPDATED FOR NEW STRUCTURE)
       const contractNames = [
-        "Exercice1", // Addition operations
-        "Exercice2", // Ether/Wei conversion
-        "Exercice3", // String management container (contains GestionChaines)
-        "Exercice4", // Positive number check
-        "Exercice5", // Parity check
-        "Exercice6", // Array operations
-        "Rectangle", // Geometry container (contains Forme and Rectangle)
+        "Exercice1",
+        "Exercice2",
+        "Exercice3",
+        "Exercice4",
+        "Exercice5",
+        "Exercice6",
+        "Rectangle",
         "Payment",
       ];
 
@@ -117,7 +113,7 @@ export const useWeb3 = () => {
           contractInstances[contractName] = contractInstance;
           console.log(`Loaded ${contractName} contract`);
         } catch (err) {
-          console.warn(`⚠️ Failed to load ${contractName}:`, err);
+          console.warn(`Failed to load ${contractName}:`, err);
           // Continue loading other contracts even if one fails
         }
       }
@@ -125,29 +121,11 @@ export const useWeb3 = () => {
       setContracts(contractInstances);
       console.log("All contracts loaded successfully");
     } catch (err) {
-      console.error("❌ Failed to load contracts:", err);
+      console.error(" Failed to load contracts:", err);
       setError("Failed to load smart contracts");
     }
   };
 
-  /**
-   * Switch to a different account
-   * Useful when user wants to test with different Ethereum addresses
-   */
-  const switchAccount = (accountIndex: number) => {
-    if (web3State.accounts[accountIndex]) {
-      setWeb3State((prev) => ({
-        ...prev,
-        currentAccount: prev.accounts[accountIndex],
-      }));
-      console.log("Switched to account:", web3State.accounts[accountIndex]);
-    }
-  };
-
-  /**
-   * Refresh account information
-   * Useful when user adds new accounts in MetaMask
-   */
   const refreshAccounts = async () => {
     if (web3State.web3) {
       try {
@@ -164,19 +142,13 @@ export const useWeb3 = () => {
     }
   };
 
-  // Return all the state and functions that components can use
   return {
-    // Connection state
     ...web3State,
     contracts,
     loading,
     error,
-
-    // Helper functions
-    switchAccount,
     refreshAccounts,
 
-    // Convenience properties
     hasContracts: Object.keys(contracts).length > 0,
     isReady: web3State.isConnected && Object.keys(contracts).length > 0,
   };
