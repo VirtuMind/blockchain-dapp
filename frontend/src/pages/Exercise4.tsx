@@ -70,7 +70,7 @@ export const Exercise4: React.FC = () => {
         parseInt(number),
       ]);
       setResult(res.toString() === "true" ? "Positif" : "Négatif");
-    } catch (err) {
+    } catch {
       setResult("Erreur");
     }
   };

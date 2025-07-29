@@ -1,17 +1,6 @@
-/**
- * NAVIGATION COMPONENT
- *
- * This component provides navigation between exercise pages and the home page.
- * It includes a "Sommaire" (Summary) link to return to the main menu as specified
- * in the project requirements.
- */
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useWeb3 } from "../hooks/useWeb3";
-import { shortenAddress } from "../utils/web3Utils";
 
-// CSS styles for the navigation
 const styles = {
   nav: {
     background: "#16213e",
@@ -60,7 +49,6 @@ const styles = {
 
 export const Navigation: React.FC = () => {
   const location = useLocation();
-  const { accounts, currentAccount, switchAccount } = useWeb3();
 
   // Check if current route is active
   const isActive = (path: string) => location.pathname === path;

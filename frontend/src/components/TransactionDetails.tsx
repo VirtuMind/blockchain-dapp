@@ -1,17 +1,5 @@
-/**
- * TRANSACTION DETAILS COMPONENT
- *
- * This component displays information about the latest blockchain transaction:
- * - Automatically fetches the most recent transaction from the blockchain
- * - Refreshes every 10 seconds to show new transactions
- * - Shows comprehensive transaction details including gas, addresses, and status
- *
- * This helps users understand recent blockchain activity
- */
-
 import React, { useState, useEffect } from "react";
 import { useWeb3 } from "../hooks/useWeb3";
-import { weiToEther } from "../utils/web3Utils";
 
 // CSS styles for the component
 const styles = {
@@ -293,20 +281,16 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = () => {
           </div>
           <div style={styles.transactionItem}>
             <span style={styles.label}>Gas Price</span>
-            <span style={styles.value}>
-              {weiToEther(latestTransaction.gasPrice)} ETH
-            </span>
+            <span style={styles.value}>{latestTransaction.gasPrice} ETH</span>
           </div>
           {/* Transaction Cost */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Transaction Cost</span>
             <span style={styles.value}>
-              {weiToEther(
-                (
-                  BigInt(latestTransaction.gasUsed) *
-                  BigInt(latestTransaction.gasPrice)
-                ).toString()
-              )}{" "}
+              {(
+                BigInt(latestTransaction.gasUsed) *
+                BigInt(latestTransaction.gasPrice)
+              ).toString()}
               ETH
             </span>
           </div>
@@ -325,9 +309,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = () => {
           {/* Value Transferred */}
           <div style={styles.transactionItem}>
             <span style={styles.label}>Value</span>
-            <span style={styles.value}>
-              {weiToEther(latestTransaction.value)} ETH
-            </span>
+            <span style={styles.value}>{latestTransaction.value} ETH</span>
           </div>
           {/* Logs/Events */}
           {latestTransaction.logs && latestTransaction.logs.length > 0 && (

@@ -12,11 +12,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useWeb3 } from "../hooks/useWeb3";
-import {
-  getBalance,
-  getBlockchainInfo,
-  shortenAddress,
-} from "../utils/web3Utils";
+import { getBalance, getBlockchainInfo } from "../utils/web3Utils";
 
 // CSS styles for the component
 const styles = {
@@ -146,8 +142,7 @@ export const BlockchainInfo: React.FC<{ contractAddress: string }> = ({
   contractAddress,
 }) => {
   // Get Web3 context from our custom hook
-  const { web3, currentAccount, networkId, isConnected, error, contracts } =
-    useWeb3();
+  const { web3, currentAccount, networkId, isConnected, error } = useWeb3();
 
   // Component state for blockchain data
   const [blockchainData, setBlockchainData] = useState<BlockchainData | null>(

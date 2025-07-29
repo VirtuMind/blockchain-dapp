@@ -129,7 +129,7 @@ export const Exercise3: React.FC = () => {
       setLoading("getMessage");
       const result = await callContractFunction(contract, "getMessage", []);
       setCurrentMessage(result.toString());
-    } catch (err) {
+    } catch {
       setError("Failed to get message");
     } finally {
       setLoading(null);
@@ -149,7 +149,7 @@ export const Exercise3: React.FC = () => {
         currentAccount
       );
       await getMessage(); // Refresh current message
-    } catch (err) {
+    } catch {
       setError("Failed to set message");
     } finally {
       setLoading(null);
@@ -166,7 +166,7 @@ export const Exercise3: React.FC = () => {
         string2,
       ]);
       setConcatenateResult(result.toString());
-    } catch (err) {
+    } catch {
       setError("Failed to concatenate strings");
     } finally {
       setLoading(null);
@@ -182,7 +182,7 @@ export const Exercise3: React.FC = () => {
         string1,
       ]);
       setConcatenateWithResult(result.toString());
-    } catch (err) {
+    } catch {
       setError("Failed to concatenate with message");
     } finally {
       setLoading(null);
@@ -198,7 +198,7 @@ export const Exercise3: React.FC = () => {
         stringToCheck,
       ]);
       setLengthResult(result.toString());
-    } catch (err) {
+    } catch {
       setError("Failed to get string length");
     } finally {
       setLoading(null);
@@ -215,7 +215,7 @@ export const Exercise3: React.FC = () => {
         compareString2,
       ]);
       setCompareResult(result.toString());
-    } catch (err) {
+    } catch {
       setError("Failed to compare strings");
     } finally {
       setLoading(null);

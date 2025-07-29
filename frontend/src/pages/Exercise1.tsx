@@ -132,7 +132,6 @@ export const Exercise1: React.FC = () => {
   const [addition2Result, setAddition2Result] = useState<string | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [transactionCount, setTransactionCount] = useState<number>(0);
 
   // Get the Exercice1 contract instance
   const contract = contracts?.["Exercice1"]?.contract;
@@ -213,7 +212,7 @@ export const Exercise1: React.FC = () => {
       setAddition2Result(result.toString());
       console.log("Addition2 result:", result.toString());
     } catch (err) {
-      console.error("❌ Error calling addition2:", err);
+      console.error("Error calling addition2:", err);
       setError("Failed to call addition2 function");
     } finally {
       setLoading(null);
@@ -247,21 +246,8 @@ export const Exercise1: React.FC = () => {
           nombre1: nombre1Value.toString(),
           nombre2: nombre2Value.toString(),
         });
-
-        // Get blockchain info including transaction count
-        try {
-          const latestBlock = await web3.eth.getBlock("latest", true);
-          setTransactionCount(latestBlock?.transactions?.length || 0);
-        } catch (err) {
-          console.error("Error getting blockchain info:", err);
-        }
-
-        console.log("State variables loaded:", {
-          nombre1Value,
-          nombre2Value,
-        });
       } catch (err) {
-        console.error("❌ Error loading state variables:", err);
+        console.error("Error loading state variables:", err);
         setError("Failed to load contract state variables");
       } finally {
         setLoading(null);
@@ -385,13 +371,10 @@ export const Exercise1: React.FC = () => {
         )}
       </div>
 
-      {/* Error Display */}
       {error && <div style={styles.error}>Erreur : {error}</div>}
 
-      {/* Blockchain Info Component */}
       <BlockchainInfo contractAddress={contractAddress} />
 
-      {/* Transaction Details Component */}
       <TransactionDetails />
     </div>
   );

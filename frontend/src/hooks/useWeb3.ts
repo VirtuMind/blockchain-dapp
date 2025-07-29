@@ -126,28 +126,11 @@ export const useWeb3 = () => {
     }
   };
 
-  const refreshAccounts = async () => {
-    if (web3State.web3) {
-      try {
-        const accounts = await web3State.web3.eth.getAccounts();
-        setWeb3State((prev) => ({
-          ...prev,
-          accounts,
-          currentAccount: accounts[0],
-          isConnected: accounts.length > 0,
-        }));
-      } catch (err) {
-        console.error("Failed to refresh accounts:", err);
-      }
-    }
-  };
-
   return {
     ...web3State,
     contracts,
     loading,
     error,
-    refreshAccounts,
 
     hasContracts: Object.keys(contracts).length > 0,
     isReady: web3State.isConnected && Object.keys(contracts).length > 0,

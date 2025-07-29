@@ -1,13 +1,5 @@
-/**
- * WEB3 UTILITIES
- *
- * This file contains utility functions for connecting React frontend
- * to Ethereum blockchain via Web3.js
- */
-
 import Web3 from "web3";
 
-// Ganache local blockchain configuration
 const GANACHE_URL = "http://127.0.0.1:7545";
 
 // Types for better TypeScript support
@@ -18,13 +10,6 @@ interface ContractArtifact {
       address: string;
     };
   };
-}
-
-interface TransactionResult {
-  receipt: any;
-  transactionHash: string;
-  gasUsed: number;
-  blockNumber: number;
 }
 
 interface CompleteTransactionData {
@@ -124,24 +109,6 @@ export const getContract = async (
     };
   } catch (error) {
     console.log("Error loading contract:", error);
-    throw error;
-  }
-};
-
-/**
- * Get user accounts from blockchain
- */
-export const getAccounts = async (web3: Web3): Promise<string[]> => {
-  try {
-    const accounts = await web3.eth.getAccounts();
-
-    if (accounts.length === 0) {
-      throw new Error("No accounts found. Make sure wallet is connected.");
-    }
-
-    return accounts;
-  } catch (error) {
-    console.log("Error getting accounts:", error);
     throw error;
   }
 };
@@ -305,124 +272,11 @@ export const sendContractTransaction = async (
   }
 };
 
-/**
- * Format transaction for display
- */
-export const formatTransaction = (transactionData: any) => {
-  if (!transactionData || !transactionData.receipt) {
-    return null;
-  }
-
-  const { receipt } = transactionData;
-
-  return {
-    hash: receipt.transactionHash,
-    block: receipt.blockNumber,
-    gasUsed: receipt.gasUsed.toString(),
-    status: receipt.status ? "Success" : "Failed",
-    timestamp: new Date().toLocaleString(),
-  };
-};
-
-/**
- * Convert Wei to Ether for display
- */
-export const weiToEther = (wei: string | number | undefined | null): string => {
-  // Handle undefined, null, or empty values
-  if (wei === undefined || wei === null || wei === "") {
-    return "0";
-  }
-
-  try {
-    // Convert to string safely
-    const weiString = wei.toString();
-
-    // Check if it's a valid number string
-    if (!/^\d+$/.test(weiString)) {
-      console.warn("Invalid wei value:", wei);
-      return "0";
-    }
-
-    return Web3.utils.fromWei(weiString, "ether");
-  } catch (error) {
-    console.error("Error converting wei to ether:", error, "Value:", wei);
-    return "0";
-  }
-};
-
-/**
- * Convert Ether to Wei for transactions
- */
-export const etherToWei = (ether: string | number): string => {
-  return Web3.utils.toWei(ether.toString(), "ether");
-};
-
-/**
- * Validate Ethereum address
- */
-export const isValidAddress = (address: string): boolean => {
-  return Web3.utils.isAddress(address);
-};
-
-/**
- * Shorten address for display
- */
-export const shortenAddress = (address: string): string => {
-  if (!address) return "";
-  return `${address.substring(0, 6)}...${address.substring(
-    address.length - 4
-  )}`;
-};
-
-/**
- * Format number for display
- */
-export const formatNumber = (
-  number: number | string,
-  decimals: number = 2
-): string => {
-  if (number === null || number === undefined) return "0";
-  return parseFloat(number.toString()).toFixed(decimals);
-};
-
-/**
- * Handle common Web3 errors
- */
-export const handleWeb3Error = (error: unknown): string => {
-  const err = error as { code?: number; message?: string };
-
-  if (err.code === 4001) {
-    return "Transaction cancelled by user";
-  }
-
-  if (err.message && err.message.includes("insufficient funds")) {
-    return "Insufficient funds for transaction";
-  }
-
-  if (err.message && err.message.includes("gas required exceeds allowance")) {
-    return "Transaction requires more gas than allowed";
-  }
-
-  if (err.message && err.message.includes("revert")) {
-    return "Transaction reverted - check contract conditions";
-  }
-
-  return err.message || "Unknown blockchain error";
-};
-
 export default {
   initWeb3,
   getContract,
-  getAccounts,
   getBalance,
   getBlockchainInfo,
   callContractFunction,
   sendContractTransaction,
-  formatTransaction,
-  weiToEther,
-  etherToWei,
-  isValidAddress,
-  shortenAddress,
-  formatNumber,
-  handleWeb3Error,
 };
