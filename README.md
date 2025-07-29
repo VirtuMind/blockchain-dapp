@@ -1,9 +1,7 @@
-# Application décentralisée réalisée avec Truffle, Ganache, ReactJS et Web3.js
-
 ## Page d'accueil
 
 ![Description of image](./frontend/src/assets/homepage.jpeg)
 
-## Page de l'un des contrats
+## Exemple de l'un des pages qui communique avec l'un des Smart Contracts
 
 ![Description of image](./frontend/src/assets/ex2.jpeg)
